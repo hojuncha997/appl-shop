@@ -1,8 +1,20 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
+import { useState } from "react";
+
 import "./App.css";
+import data from "./data.js";
+import Card from "./Card.js";
 
 function App() {
+  // 서버에서 가져온 데이터로 가정
+  let [shoes, setShoes] = useState(data);
+  let urlList = [
+    "https://codingapple1.github.io/shop/shoes1.jpg",
+    "https://codingapple1.github.io/shop/shoes2.jpg",
+    "https://codingapple1.github.io/shop/shoes3.jpg",
+  ];
+
   return (
     <div className="App">
       {/* <Button variant="primary">Primary</Button> */}
@@ -21,30 +33,10 @@ function App() {
       {/* 부트스트랩 그리드 사용*/}
       <div className="container">
         <div className="row">
-          <div className="col-md-4">
-            <img
-              src="https://codingapple1.github.io/shop/shoes1.jpg"
-              width="80%"
-            />
-            <h4>상품명</h4>
-            <p>상품설명</p>
-          </div>
-          <div className="col-md-4">
-            <img
-              src="https://codingapple1.github.io/shop/shoes2.jpg"
-              width="80%"
-            />
-            <h4>상품명</h4>
-            <p>상품설명</p>
-          </div>
-          <div className="col-md-4">
-            <img
-              src="https://codingapple1.github.io/shop/shoes3.jpg"
-              width="80%"
-            />
-            <h4>상품명</h4>
-            <p>상품설명</p>
-          </div>
+          {shoes.map((item, index) => {
+            return <Card imgUrl={urlList[index]} product={shoes[index]} />;
+            // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+          })}
         </div>
       </div>
     </div>
