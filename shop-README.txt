@@ -230,3 +230,72 @@ params에 이상한 값을 입력하여 들어올 수도 있는데,
 조건을 만족하는 요소가 없으면 빈 배열을 반환한다.
 .filter()는 조건을 만족하는 여러 요소를 찾을 때 사용된다.
 
+
+
+8. styled-component 사용
+
+8-1. styled-component 설치
+npm install styled-component
+
+8-2. styled-component 사용
+import styled from 'styled-components'
+
+styeld 컴포넌트를 사용하면 className과 css파일을 사용하지 않아도 된다.
+js파일 내에서 전부 해결 가능하다.
+
+아래와 같이 사용할 수 있다.
+
+// 실제로는 컴포넌트다. 백틱 사용
+let YellowButton= styled.button`
+  background: yellow;
+  color: black;
+  padding: 10px;
+`
+
+
+8-3. styeld-component의 장점
+
+1. 이를 활용하면 css파일을 만들지 않아도 된다.
+2. 따라서 다른 JS 파일을 오염시키지 않는다.
+3. 로딩시간이 단축된다. => 해당 HTML의 style에 넣어주기 때문. 또한 css파일을 전부 가져오지 않기 때문에
+   해당 페이지에만 필요한 css만 로딩 되기 때문
+
+번들링 시 css파일도 합쳐지게 되는데 그 떄 오염이 될 가능성이 있다.
+만약 '컴포넌트.module.css' 이렇게 파일명을 붙이면 해당 파일이 해당 컴포넌트에만 대응되므로
+styled-component를 사용하지 않아도 오염이 되지 않는다.
+
+비슷한 스타일을 만들기 위해서 styled-component에 props를 전달할 수도 있다.
+
+let YellowBtn = styled.button`
+  background: ${(props) => props.bg};
+  color: black;
+  padding: 10px;
+  height: 50px;
+  witdh: 50px;
+`;
+...
+<YellowBtn bg={"pink"}>버튼</YellowBtn>
+
+이렇게 사용한다.
+
+4. 아래와 같이 간단한 프로그래밍도 가능하다.
+
+let YellowBtn = styled.button`
+  background: ${(props) => props.bg};
+  color: ${(props) => (props.bg == "pink" ? "brown" : "black")};
+  padding: 10px;
+  height: 50px;
+  witdh: 50px;
+`;
+
+5. 기존에 만들었던 스타일을 복사하여 사용할 수도 있다.
+let NewBtn = styled.button(YellowBtn)`
+  padding: 10px;
+  ...
+`
+
+8-4. styeld-component의 단점
+1. js파일이 매우 복잡해진다.
+2. 다른 파일에서 style을 재사용하고 싶은 경우 import/export하여 쓰는데,
+    이는 기존의 css파일 사용 방법과 다르지 않다.
+3. 협업 시 CSS 담당하는 사람이 코드를 못 알아볼 수도 있다.    

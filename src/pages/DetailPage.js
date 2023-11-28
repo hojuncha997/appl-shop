@@ -1,4 +1,13 @@
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
+
+// let YellowBtn = styled.button`
+//   background: ${(props) => props.bg};
+//   color: ${(props) => (props.bg == "pink" ? "brown" : "black")};
+//   padding: 10px;
+//   height: 50px;
+//   witdh: 50px;
+// `;
 
 const DetailPage = (props) => {
   // url의 파라미터 정보가 useParams에 남는다.
@@ -15,11 +24,13 @@ const DetailPage = (props) => {
     return element.id == id;
   });
 
-  if (item == null || item == undefined) {
+  if (item === null || item === undefined) {
     return <div>상품이 존재하지 않습니다.</div>;
   } else {
     return (
       <div className="container">
+        {/* <YellowBtn bg={"pink"}>버튼</YellowBtn> */}
+
         <div className="row">
           <div className="col-md-6">
             <img
