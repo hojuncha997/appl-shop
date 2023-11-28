@@ -99,3 +99,66 @@ Route는 접근 path와 element를 props로 받는다. 그래서 접근 시 넘�
 <Link to="/home">홈</Link>
 <Link to="/detail">상세페이지 </Link>
 
+4. useNavigate, Outlet의 사용
+import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
+
+
+useNavigate안에는 함수가 들어있는데 그 함수가 페이지 이동에 용이하다
+let navigate = useNavigate(); 
+그리고 아래와 같이 사용한다.
+<Nav.Link onClick={() => {navigate("/detail");}}>Detail</<Nav.Link>
+Detail을 누르면 /detail로 이동한다.
+
+<Nav.Link onClick={() => {navigate(-1);}}
+              // 1은 앞으로 1페이지
+              // -2은 뒤로 2페이지
+            >
+              뒤로 가기
+</Nav.Link>
+
+404페이지 만들기
+        <Route path="*" element={<div>404</div>} />
+
+
+5. NestedRoutes
+
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/about/member" element={<AboutPage />} />
+        <Route path="/about/location" element={<AboutPage />} />
+
+React Router에서 /about/member와 /about/location 경로가 404 페이지를 
+띄우는 문제는 경로 매칭 방식과 관련이 있을 수 있다. 
+React Router v6에서는 라우트 매칭이 기본적으로 '정확한 일치(exact match)'를
+기반으로 하기 때문에, 경로가 정확히 일치하지 않으면 해당 라우트로 이동하지 않는다.
+
+문제를 해결하기 위해, NestedRoutes를 사용할 수 있다.
+/about, /about/member, /about/location 등의 경로에 대해 중첩 라우팅(nested routing)을 사용할 수 있다.
+
+<Route path="/about" element={<AboutPage />}>
+    <Route path="member" element={<div>멤버</div>} />
+    <Route path="location" element={<div>로케</div>} />
+</Route>
+
+장점은 접근 시에 element를 2개 보여줄 수 있다는 것이다.
+그러나 막상 /about/member로 접근해도 AboutPage만 보일 뿐,
+<div>멤버</div>는 보이지 않는다. 
+
+nested route된 element는 부모 라우터의 내부에서 <Outlet>을 사용하여 위치를 정해줘야 보여진다.
+
+import { Outlet } from "react-router-dom";
+
+const AboutPage = () => {
+  return (
+    <div>
+      <h4>회사 정보</h4>
+      <Outlet></Outlet>
+    </div>
+  );
+};
+export default AboutPage;
+
+이러면 <Outlet> 자리에 해당 컴포넌트의 내용이 보이게 된다.
+nested routes는 이렇듯 여러 개의 유사한 페이지가 필요할 때 사용된다.
+Route로 ui를 구성하면 뒤로가기 버튼을 잘 이용할 수 있다.
+페이지 이동도 용이하다.
+

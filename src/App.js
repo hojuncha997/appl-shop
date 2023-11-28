@@ -1,12 +1,13 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
 import { useState } from "react";
-
+import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import "./App.css";
 import data from "./data.js";
 import Card from "./Card.js";
 import DetailPage from "./pages/DetailPage.js";
-import { Routes, Route, Link } from "react-router-dom";
+import AboutPage from "./pages/AboutPage.js";
+import EventPage from "./pages/EventPage.js";
 
 function App() {
   // 서버에서 가져온 데이터로 가정
@@ -17,6 +18,8 @@ function App() {
     "https://codingapple1.github.io/shop/shoes3.jpg",
   ];
 
+  let navigate = useNavigate(); //페이지 이동 용이.
+
   return (
     <div className="App">
       {/* <Button variant="primary">Primary</Button> */}
@@ -24,20 +27,40 @@ function App() {
         <Container>
           <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#cart">Cart</Nav.Link>
-            {/* <Link to="/">홈</Link>
-            <Link to="/detail">상세페이지 </Link> */}
+            <Nav.Link
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/detail");
+              }}
+            >
+              Detail
+            </Nav.Link>
+
+            <Nav.Link
+              onClick={() => {
+                navigate(-1);
+              }}
+              // 1은 앞으로 1페이지
+              // -2은 뒤로 2페이지
+            >
+              뒤로 가기
+            </Nav.Link>
           </Nav>
         </Container>
       </Navbar>
 
-      <Link to="/" className="link">
+      {/* <Link to="/" className="link">
         홈
       </Link>
       <Link to="/detail" className="link">
         상세페이지
-      </Link>
+      </Link> */}
 
       <Routes>
         <Route
@@ -63,6 +86,19 @@ function App() {
         />
         {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
         <Route path="/detail" element={<DetailPage />} />
+
+        <Route path="/about" element={<AboutPage />}>
+          <Route path="member" element={<div>멤버</div>} />
+          <Route path="location" element={<div>로케</div>} />
+        </Route>
+
+        <Route path="/event" element={<EventPage />}>
+          <Route path="one" element={<div>첫 주문 시 양배추즙 서비스</div>} />
+          <Route path="two" element={<div>생일기념 쿠폰 받기</div>} />
+        </Route>
+
+        {/* "*" 적힌 경로 외의 모든 경로에 대해서 */}
+        <Route path="*" element={<div>404</div>} />
       </Routes>
     </div>
   );
