@@ -37,3 +37,65 @@ public 사용시 유의점.
 사이트 배포 시 하위 경로에서 public의 자원을 사용할 때는, 그 "/이미지경로" 앞에
 앞선 경로를 적어줘야할 수도 있다. 번거롭기 때문에 아래와 같이 사용하기를 권장한다.
 <img src={process.env.PUBLIC_URL + 'logo192.png'} width="80%">
+
+3. 라우터(세팅과 기본 라우팅)
+
+원래는 컴포넌트 만들어서 상세페이지에 내용을 채운다.
+/detail 경로 접근 시 해당 컴포넌트를 보여준다.
+
+react-router-dom을 사용하면 라우팅을 쉽게 할 수 있다.
+
+3-1.react-router-dom 설치
+
+npm install react-router-dom@6
+
+src/index.js에 가서 
+import {BrowserRouter} from "react-router-dom";
+<BrowserRouter>로 <App/>을 감싸준다.
+
+App.js 이동
+import { Routes, Route, Link } from "react-router-dom";
+...
+return (
+    <div className="App">
+      <Routes>
+        <Route path="/detail" element={<div>상세페이지</div>} />
+        <Route path="/detail" element={<DetailPage>} />
+      </Routes>
+
+Route는 접근 path와 element를 props로 받는다. 그래서 접근 시 넘겨준다.
+그런데 이렇게 하니까 페이지를 이동해도 밑에 남아있는 코드는 그대로다.
+따라서 아래와 같이 element에 기존 페이지 구성을 빼주었다.
+<Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              {" "}
+              {/* 이미지 삽입 */}
+              <div className="main-bg"></div>
+              {/* 부트스트랩 그리드 사용*/}
+              <div className="container">
+                <div className="row">
+                  {shoes.map((item, index) => {
+                    return (
+                      <Card imgUrl={urlList[index]} product={shoes[index]} />
+                    );
+                    // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+                  })}
+                </div>
+              </div>
+            </>
+          }
+        />
+        <Route path="/detail" element={<div>상세페이지</div>} />
+      </Routes>
+
+이렇게 되면 디테일 페이지 이동 시 기존 화면은 보이지 않게 된다.
+그러나 이렇게 하면 코드가 너무 지저분해지기 때문에, 페이지를 컴포넌트로 만들어서
+컴포넌트 명으로 넣어주는 것이 편리하다.
+
+링크 사용해서 페이지 이동
+<Link to="/home">홈</Link>
+<Link to="/detail">상세페이지 </Link>
+

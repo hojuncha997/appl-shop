@@ -9,6 +9,19 @@
   background-position: center;
 }
 
+.link {
+  padding: 10px;
+  color: inherit; /* 기존 텍스트 색상을 유지하거나 원하는 색상으로 설정 */
+  text-decoration: none; /* 밑줄 제거 */
+  
+}
+
+.link:hover {
+  color: red; /* 마우스 오버 시 색상 변경 */
+}
+
+
+
 
 .App-logo {
   height: 40vmin;

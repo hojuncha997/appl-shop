@@ -5,6 +5,8 @@ import { useState } from "react";
 import "./App.css";
 import data from "./data.js";
 import Card from "./Card.js";
+import DetailPage from "./pages/DetailPage.js";
+import { Routes, Route, Link } from "react-router-dom";
 
 function App() {
   // 서버에서 가져온 데이터로 가정
@@ -24,21 +26,44 @@ function App() {
           <Nav className="me-auto">
             <Nav.Link href="#home">Home</Nav.Link>
             <Nav.Link href="#cart">Cart</Nav.Link>
+            {/* <Link to="/">홈</Link>
+            <Link to="/detail">상세페이지 </Link> */}
           </Nav>
         </Container>
       </Navbar>
-      {/* 이미지 삽입 */}
-      <div className="main-bg"></div>
 
-      {/* 부트스트랩 그리드 사용*/}
-      <div className="container">
-        <div className="row">
-          {shoes.map((item, index) => {
-            return <Card imgUrl={urlList[index]} product={shoes[index]} />;
-            // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
-          })}
-        </div>
-      </div>
+      <Link to="/" className="link">
+        홈
+      </Link>
+      <Link to="/detail" className="link">
+        상세페이지
+      </Link>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              {" "}
+              {/* 이미지 삽입 */}
+              <div className="main-bg"></div>
+              {/* 부트스트랩 그리드 사용*/}
+              <div className="container">
+                <div className="row">
+                  {shoes.map((item, index) => {
+                    return (
+                      <Card imgUrl={urlList[index]} product={shoes[index]} />
+                    );
+                    // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+                  })}
+                </div>
+              </div>
+            </>
+          }
+        />
+        {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
+        <Route path="/detail" element={<DetailPage />} />
+      </Routes>
     </div>
   );
 }
