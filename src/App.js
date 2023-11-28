@@ -85,7 +85,9 @@ function App() {
           }
         />
         {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
-        <Route path="/detail" element={<DetailPage />} />
+        {/* <Route path="/detail" element={<DetailPage shoes={shoes} />} /> */}
+        {/* url파라미터 사용 */}
+        <Route path="/detail/:id" element={<DetailPage shoes={shoes} />} />
 
         <Route path="/about" element={<AboutPage />}>
           <Route path="member" element={<div>멤버</div>} />

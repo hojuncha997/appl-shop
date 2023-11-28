@@ -162,3 +162,71 @@ nested routes는 이렇듯 여러 개의 유사한 페이지가 필요할 때 �
 Route로 ui를 구성하면 뒤로가기 버튼을 잘 이용할 수 있다.
 페이지 이동도 용이하다.
 
+
+6. URL 파라미터로 여러 개의 상세페이지 만들기
+    <Route path="/detail/1" element={<DetailPage shoes={shoes} />} />
+    <Route path="/detail/2" element={<DetailPage shoes={shoes} />} />
+
+    양이 많아지면 위처럼 나열할 수는 없다.
+    때문에 URL 파라미터를 사용하여 해결한다.
+
+    <Route path="/detail/:id" element={<DetailPage shoes={shoes} />} />
+
+
+그리고 해당 컴포넌트에서 useParams 훅을 가져와서 사용한다.
+
+
+import { useParams } from "react-router-dom";
+
+const DetailPage = (props) => {
+  // url의 파라미터 정보가 useParams에 남는다.
+  let { id } = useParams();
+  console.log(id);
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-6">
+          <img
+            src="https://codingapple1.github.io/shop/shoes1.jpg"
+            width="100%"
+          />
+        </div>
+        <div className="col-md-6">
+          <h4 className="pt-5">{props.shoes[id].title}</h4>
+          {/* url파라미터를 인덱스 값에 넣어줘야 한다. 
+          url파라미터를 넣어주기 위해 useParams 훅을 사용할 수 있다.*/}
+
+          <p>상품설명</p>
+          <p>120000원</p>
+          <button className="btn btn-danger">주문하기</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default DetailPage;
+
+참고:
+url파라미터는 아래처럼도 사용할 수 있다.
+    <Route path="/detail/:id/fdasfas/:exmple/ ...
+    <Route path="/detail/:id/:exmple/...
+
+params에 이상한 값을 입력하여 들어올 수도 있는데,
+이는 조건문을 사용하여 막아줄 수 있다.
+
+만약 shoes 배열의 순서가 바뀐다면, 그에 따라 보여지는 값이 바뀔 수 있다.
+이럴 때는 index가 아닌 고유값을 사용한다면 원래의 값을 보여줄 수 있다.
+
+7. JS 배열의 .find 함수와 .filter함수
+
+.find()
+.find() 메서드는 주어진 테스트 함수를 만족하는 배열의 첫 번째 요소를 반환한다.
+만약 어떤 요소도 조건을 만족하지 않으면 undefined를 반환한다.
+.find()는 주로 단일 요소를 찾을 때 사용된다.
+
+.filter()
+.filter() 메서드는 주어진 함수를 만족하는 모든 요소로 새 배열을 만들어 반환한다.
+조건을 만족하는 요소가 없으면 빈 배열을 반환한다.
+.filter()는 조건을 만족하는 여러 요소를 찾을 때 사용된다.
+
