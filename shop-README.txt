@@ -639,3 +639,165 @@ npm install @reduxjs/toolkit react-redux
 Redux 사용
 
 Redux store에 state 보관하는 법
+
+1. 우선은 slice(state)를 만들어준다.
+
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+// useState와 유사한 역할
+// state 하나를 slice라고 부른다
+createSlice({
+    name: 'state 이름~',
+    initialState: '실제 state의 값~'
+})
+
+export default configureStore({
+  reducer: {},
+});
+
+2. state 등록
+
+export default configureStore({
+  reducer: {
+    // 작명: sliceName.reduce (reducer를 꼭 붙여줘야 함)
+    user: user.reducer,
+  },
+});
+
+
+즉, slice를 생성하고 규격에 맞춰서 등록해준다.
+
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+// useState와 유사한 역할
+// state 하나를 slice라고 부른다
+let user = createSlice({
+  name: "user",
+  initialState: "cha",
+});
+
+let stock = createSlice({
+  name: "stock",
+  initialState: [10, 11, 12],
+});
+
+export default configureStore({
+  reducer: {
+    // 작명: sliceName.reduce (reducer를 꼭 붙여줘야 함)
+    user: user.reducer,
+    stock: stock.reducer,
+
+  },
+});
+
+3. 가져다 쓰기( CartPage.js에서 사용)
+
+
+import { Table } from "react-bootstrap";
+import { useSelector } from "react-redux";
+
+const CartPage = () => {
+  
+  // (state) => {return state} 일반적으로 이렇게 적어놓고 시작한다.
+  // 위는 Redux 만든 사람이 정한 규칙이다.
+  // a는 state의 모든 state가 저장된다.
+  // 만약 let a = useSelector((state) => {return state.user}) 했다면
+  // a에는 user에 해당하는 값만 저장된다. //cha
+  
+  let a = useSelector((state) => {
+    return state;
+  });
+  console.log(a); //{user: 'cha', stock: Array(3)}
+  console.log(a.user); // cha
+  console.log(a.stock[0]); // 10
+...
+
+
+5. Redux가 편한데 props를 사용하는 이유
+- redux 설정이 복잡하고 길어짐. 따라서 간단한 pjt는 props사용도 괜찮다.
+- 컴포넌트가 많아지면 redux 쓸 수밖에 없다.
+- 그러나 그렇다고 모든 state를 Redux store에 등록할 필요는 없다.
+- 만약 공유가 필요없는 state라면 useState사용이 더 나을 수 있다.
+
+
+
+#################################
+
+Redux의 state 변경하는 법
+
+#################################
+
+redux의 state를 변경하는 방법은 기존 useState의 방법과는 다르다.
+만약 'cha'라는 state를 philip cha로 변경하려면,
+
+1. state를 수정하는 함수를 만든다.
+2. 원할 때 그 함수를 실행해 달라고 store.js에 요청해야 한다.
+3. 사용처에서 dispatch(state변경함수())를 사용하여 가져다 쓴다.
+
+//store.js
+
+let user = createSlice({
+  name: "user",
+  initialState: "cha",
+
+  reducers: {
+    // 1. 임의의 state 수정 함수를 생성한다
+    changeName(state) {
+      //기존 state를 변경하려면 파라미터를 넣어준다.
+      return "Philip " + state;
+    },
+  },
+});
+// 2. 만든 함수를 export 한다. actions에는 state변경함수들이 남는다.
+export let {changeName} = user.actions
+//이제 만든 함수를 import 해서 사용하면 된다
+
+----
+
+
+3. 가져다 쓰기
+
+store에서 만든 함수를 import 한다.
+해당 함수를 호출하기 위해 useDispatch도 import 한다.
+
+//CartPage.js
+
+import { useDispatch, useSelector } from "react-redux";
+import { changeName } from "../store";
+
+  //store.js에 요청을 보내는 함수이다.
+  //dispatch(state변경함수()) 이렇게 사용해야 한다.
+  //dispatch(stateName())
+
+  let dispatch = useDispatch();
+
+return(
+  ...
+  <button onClick={() => {
+    //여기서 실행하는 것이 아니다. store.js로 메시지만 보낸다
+      dispatch(changeName());
+  }}>
+    +
+  </button>
+)
+
+----
+state 수정 함수를 스토어에 만들어 놓는다.
+개별 컴포넌트에서 수정 함수를 실행해 달라고 스토어에 요청한다.
+이 때 useDispatch를 사용한다.
+
+이런 방식의 이점:
+
+만약 store의 state를 모든 컴포넌트에서 직접 변경할 수 있었다면,
+문제가 생겼을 시 모든 컴포넌트를 다 뒤져야 한다.
+그런데 state 수정함수를 미리 만들어 놓고,
+ 개별 컴포넌트가 요청하는 방식을 사용하면,
+ 문제가 생겼을 때 store의 로직만 확인하면 된다.
+
+
+
+#################################
+
+Redux의 state가 Object/array일 경우의 변경
+
+#################################

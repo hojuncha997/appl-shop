@@ -1,8 +1,31 @@
 import { Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { changeName } from "../store";
 
 const CartPage = () => {
+  // (state) => {return state} 일반적으로 이렇게 적어놓고 시작한다.
+  // 위는 Redux 만든 사람이 정한 규칙이다.
+  // a는 state의 모든 state가 저장된다.
+  // 만약 let a = useSelector((state) => {return state.user}) 했다면
+  // a에는 user에 해당하는 값만 저장된다. //cha
+  //   let a = useSelector((state) => {
+  //     return state;
+  //   });
+  //   console.log(a); //{user: 'cha', stock: Array(3)}
+  //   console.log(a.user); // cha
+  //   console.log(a.stock[0]); // 10
+  let user = useSelector((state) => state.user);
+  let cart = useSelector((state) => state.cart);
+
+  //store.js에 요청을 보내는 함수이다.
+  //dispatch(state변경함수()) 이렇게 사용해야 한다.
+  //dispatch(stateName())
+  let dispatch = useDispatch();
+  console.log(cart);
+
   return (
     <div>
+      {user}
       <Table>
         <thead>
           <tr>
@@ -12,13 +35,28 @@ const CartPage = () => {
             <th>변경하기</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>안녕</td>
-            <td>안녕</td>
-            <td>안녕</td>
-          </tr>
+          {cart.map((element, index) => {
+            console.log(element);
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{element.name}</td>
+                <td>{element.count}</td>
+                <td>
+                  <button
+                    onClick={() => {
+                      //여기서 실행하는 것이 아니다. store.js로 메시지만 보낸다
+                      dispatch(changeName());
+                    }}
+                  >
+                    +
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>
