@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { Nav } from "react-bootstrap";
 import { cleanup } from "@testing-library/react";
 import { Context1 } from "../App";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../store/cartSlice";
 
 // let YellowBtn = styled.button`
 //   background: ${(props) => props.bg};
@@ -16,6 +18,8 @@ import { Context1 } from "../App";
 const DetailPage = (props) => {
   // 보관함을 해제한다. {state1, state2..} 처럼 Object 형식으로
   let { stock, shoes } = useContext(Context1);
+
+  let dispatch = useDispatch();
 
   let [count, setCount] = useState(0);
   let [alertBox, setAlertBox] = useState(true);
@@ -110,7 +114,20 @@ const DetailPage = (props) => {
 
               <p>상품설명</p>
               <p>120000원</p>
-              <button className="btn btn-danger">주문하기</button>
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  dispatch(
+                    addItemToCart({
+                      id: item.id,
+                      name: item.title,
+                      count: 1,
+                    })
+                  );
+                }}
+              >
+                주문하기
+              </button>
             </div>
 
             {/* <input onChange={(e) => setNum(e.target.value)} /> */}

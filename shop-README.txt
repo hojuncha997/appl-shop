@@ -801,3 +801,86 @@ state 수정 함수를 스토어에 만들어 놓는다.
 Redux의 state가 Object/array일 경우의 변경
 
 #################################
+
+//store.js
+let user = createSlice({
+  name: "user",
+  initialState: { name: "cha", age: 20 },
+
+  reducers: {
+    changeName(state) {
+      //   return { name: "park", age: 20 };
+      // 아래와 같이 array/object의 경우 직접 수정해도 state 변경된다. 자동설치된 immer.js 덕분이다.
+      state.name = "park";
+    },
+    increase(state) {
+      state.age += 1;
+    },
+  },
+});
+export let { changeName, increase } = user.actions;
+
+결론: state가 object/arry면 return 없이 직접 수정해도 된다.
+그래서 문자 하나만 필요해도 일부러 {}에 담아서 쓰기도 한다.
+
+
+
+## 그런데 만약 파라미터를 전달해서 수정하고 싶다면?
+
+
+increase(state, action) {
+      state.age += action.payload;
+    },
+
+이런 식으로 state 옆에 파라미터를 추가해줘서 사용할 수 있다.
+물론 사용처에서도 increase(10) 처럼 파라미터를 사용해서 
+store.js의 함수를 호출할 수 있다.
+
+*받은 파라미터를 함수 본문에서 사용할 때는 .payload를 반드시 붙여준다.
+왜냐하면 파라미터 자체는 Object로 전달되기 때문이다
+
+* 파라미터는 일반적으로 actions으로 이름을 지어준다. payload 뿐만 아니라
+action과 관련된 정보를 담아 보내기도 하기 때문이다.
+
+*action은 Redux의 state변경 함수들을 의미한다.
+
+
+
+#################################
+
+파일 분할
+
+#################################
+store.js가 너무 길어지면 가독성이 떨어진다.
+let user와 같은 변수들을 각각의 파일에 담아서 store.js에서
+import 하여 사용하는 방법도 있다.
+
+여기서는  /src/store라는 디렉토리에 만들어준다.
+user의 경우는 userSlice.js로 만들었다.
+
+// userSlice.js: export default user (변수 내보내기)
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+let user = createSlice({
+  name: "user",
+  initialState: { name: "cha", age: 20 },
+
+  reducers: {
+    changeName(state) {
+      state.name = "park";
+    },
+    increase(state, action) {
+      state.age += action.payload;
+    },
+  },
+});
+export let { changeName, increase } = user.actions;
+//여기가 추가 됐음
+export default user
+
+
+//store.js: 분할된 파일만 불러옴
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+import user from "./store/userSlice";
+
+//CartPage.js: 임포트 경로 수정
+import { changeName, increase } from "../store/userSlice";

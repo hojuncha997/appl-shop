@@ -1,6 +1,7 @@
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { changeName } from "../store";
+import { changeName, increase } from "../store/userSlice";
+import { increaseCount } from "../store/cartSlice";
 
 const CartPage = () => {
   // (state) => {return state} 일반적으로 이렇게 적어놓고 시작한다.
@@ -25,7 +26,15 @@ const CartPage = () => {
 
   return (
     <div>
-      {user}
+      <h6>{user.name}의 장바구니</h6>
+      <button
+        onClick={() => {
+          dispatch(increase(10));
+        }}
+      >
+        버튼 누르면 age +1
+      </button>
+      {user.age}
       <Table>
         <thead>
           <tr>
@@ -48,7 +57,7 @@ const CartPage = () => {
                   <button
                     onClick={() => {
                       //여기서 실행하는 것이 아니다. store.js로 메시지만 보낸다
-                      dispatch(changeName());
+                      dispatch(increaseCount(element.id));
                     }}
                   >
                     +
