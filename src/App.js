@@ -9,6 +9,7 @@ import Card from "./Card.js";
 import DetailPage from "./pages/DetailPage.js";
 import AboutPage from "./pages/AboutPage.js";
 import EventPage from "./pages/EventPage.js";
+import CartPage from "./pages/CartPage.js";
 
 // Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
 export let Context1 = createContext();
@@ -147,6 +148,8 @@ function App() {
           <Route path="one" element={<div>첫 주문 시 양배추즙 서비스</div>} />
           <Route path="two" element={<div>생일기념 쿠폰 받기</div>} />
         </Route>
+
+        <Route path="/cart" element={<CartPage />} />
 
         {/* "*" 적힌 경로 외의 모든 경로에 대해서 */}
         <Route path="*" element={<div>404</div>} />

@@ -1,0 +1,55 @@
+
+15. Redux 사용 (장바구니 페이지 만들기)
+
+장바구니 데이터를 state에 보관해 주고 데이터 바인딩 한다.
+그런데 만약 그 데이터가 App, DetailPage, CartPage 모두 필요하다면,
+App에서 만들어야 한다.
+
+그런데 그렇게 하면 Props를 계속 넘겨줘야 하고 이는 번거롭다.
+
+Redux라는 라이브러리를 사용하면 컴포넌트들이 props 없이도
+state를 공유할 수 있다.
+
+1.redux를 사용하면 js 파일을 하나 만들고 거기에 스테이트들을
+보관해 둘 수 있다.
+
+2. 모든 컴포넌트들이 거기에 있는 state들을 가져와서 사용할 수 있다.
+
+따라서 규모가 큰 앱에서는 대부분 redux를 사용한다.
+
+*react와 react-dom 버전이 18.1 이상이어야 한다.
+
+15-1. Redux 설치
+npm install @reduxjs/toolkit react-redux
+
+
+15-2. Redux 세팅
+  (1). src/store.js 파일 생성
+  (2). 해당 파일에 아래 코드 붙여넣기
+
+    import { configureStore } from '@reduxjs/toolkit'
+
+    export default configureStore({
+      reducer: { }
+    }) 
+
+  (3). index.js에서 <Provider store={store}> 쓰기
+  
+  //index.js
+  import { Provider } from "react-redux";
+  import store from "./store";
+
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(
+    <React.StrictMode>
+      <Provider store={store}> //store는 redux store로 사용할 /src/store.js이다.
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+      </Provider>
+    </React.StrictMode>
+  );
+  reportWebVitals();
+
+이로써 <App> 컴포넌트와 그 자식들은 store에서 값을 맘대로 꺼내 쓸 수 있다.
+
