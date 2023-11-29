@@ -1,6 +1,6 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
@@ -10,6 +10,9 @@ import DetailPage from "./pages/DetailPage.js";
 import AboutPage from "./pages/AboutPage.js";
 import EventPage from "./pages/EventPage.js";
 
+// Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
+export let Context1 = createContext();
+
 function App() {
   // 서버에서 가져온 데이터로 가정
   let [shoes, setShoes] = useState(data);
@@ -17,6 +20,9 @@ function App() {
   let [getCount, setGetCount] = useState(1);
 
   let [isLoading, setIsLoading] = useState(false);
+
+  // Context API 실습을 위한 스테이트. 이를 DetailPage나 TabContent 컴포넌트에서 사용한다.
+  let [stock, setStock] = useState([10, 11, 12]);
 
   let navigate = useNavigate(); //페이지 이동 용이.
 
@@ -122,7 +128,15 @@ function App() {
         {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
         {/* <Route path="/detail" element={<DetailPage shoes={shoes} />} /> */}
         {/* url파라미터 사용: 아무거나 넣을 수 있음. */}
-        <Route path="/detail/:id" element={<DetailPage shoes={shoes} />} />
+        <Route
+          path="/detail/:id"
+          element={
+            <Context1.Provider value={{ stock, shoes }}>
+              <DetailPage shoes={shoes} />
+              {/* 여기 안의 모든 컴포넌트는 stock, shoes 사용가능 */}
+            </Context1.Provider>
+          }
+        />
 
         <Route path="/about" element={<AboutPage />}>
           <Route path="member" element={<div>멤버</div>} />

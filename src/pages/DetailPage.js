@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Nav } from "react-bootstrap";
 import { cleanup } from "@testing-library/react";
+import { Context1 } from "../App";
 
 // let YellowBtn = styled.button`
 //   background: ${(props) => props.bg};
@@ -13,6 +14,9 @@ import { cleanup } from "@testing-library/react";
 // `;
 
 const DetailPage = (props) => {
+  // 보관함을 해제한다. {state1, state2..} 처럼 Object 형식으로
+  let { stock, shoes } = useContext(Context1);
+
   let [count, setCount] = useState(0);
   let [alertBox, setAlertBox] = useState(true);
   let [tab, setTab] = useState(0);
@@ -153,6 +157,7 @@ const DetailPage = (props) => {
 };
 
 const TabContent = ({ tab }) => {
+  let { stock } = useContext(Context1);
   // if (tab == 0) {
   //   return <div>내용0</div>;
   // }

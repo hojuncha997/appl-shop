@@ -472,6 +472,7 @@ react-bootstrap 사용
 2. 보여져야 할 UI를 state로 만든다. let [tab. setTab] = useState(0)
 3. state값에 따라 내용이 바뀔 수 있도록 내용을 반환하는 컴포넌트 생성
 4. 버튼을 누를 때 스테이트 값이 바뀌고, 그 스테이트 값이 컴포넌트에 전달되도록 props작성.
+--------------------------------------------
 
 탭 애니메이션 만들기
 전환 애니메이션은 부착하면 애니메이션 나오는 className을 하나 만들고
@@ -490,3 +491,89 @@ react-bootstrap 사용
   opacity: 1;
   transition: opacity 0.5s;
 }
+
+
+--------------------------------------------
+14. Context API 사용하기(props 대신)
+
+SPA의 단점은 컴포넌트 간 state 공유가 어렵다는 것이다.
+물론 부모 컴포넌트가 자식에게 props로 전달해 줄 수 있다.
+
+그런데 조부모 컴포넌트에서 손자 컴포넌트에게 직접 스테이트를 전달할 수는 없다.
+자식이 다시 한 번 더 손자에게 props를 전달해야 한다.
+
+만약 컴포넌트가 10번 중첩돼 있으면 계속해서 props를 전달해야 한다.
+이는 너무 복잡하다. 아래의 방법들을 사용해 볼 수 있다.
+
+1. Context API 사용(리액트 기본 문법) 
+2. Redux 등 외부 라이브러리 사용
+
+위 방법을 사용하면 아래의 컴포넌트가 상위 컴포넌트들의 데이터들을 자유롭게 사용할 수 있다.
+그런데 Context API는 현장에서는 잘 사용하지 않는다. 
+성능 이슈와 컴포넌트 재활용이 어렵다는 점 때문이다.
+
+14-1. Context API 세팅
+
+1. createContext()
+2. <Context.Provider>로 스테이트 공유를 원하는 컴포넌트 감싸기
+3. <Context.Provider>에 value={{}} 속성을 추가해 공유를 원하는 스테이트 추가
+    --> <Context.Provider value={{state1, state2 ...}}>
+
+
+//App.js
+
+// Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
+export import { createContext } from "react";
+
+//함수 바깥에 설정. state 보관함
+let Context1 = createContext();
+
+
+//자식 컴포넌트가 가져다 쓸 데이터
+let [stock, setStock] = useState([10, 11, 12]);
+
+return(
+  ...
+  <Route
+    path="/detail/:id"
+    element={
+      <Context1.Provider value={{stock, shoes}}>
+        <DetailPage shoes={shoes} />
+        {/* 여기 안의 모든 컴포넌트는 stock, shoes 사용가능 */}
+      </Context1.Provider>
+    }
+  />
+)
+
+4. Context 임포트
+5. useState 임포트 후 Context 감싸기
+
+//DetailPage.js
+
+import { Context1 } from "../App";
+//Context 값을 사용하기 위해 useContext 임포트
+import { useContext} from "react";
+
+const DetailPage = (props) => {
+  
+  // 보관함을 해제한다. {state1, state2..} 처럼 Object 형식으로
+  // 이렇게 가져다 쓸 수 있다.
+  let { stock, shoes } = useContext(Context1);
+
+// 그 자식 컴포넌트에서도 사용할 수 있다.
+const TabContent = ({ tab }) => {
+  let { stock } = useContext(Context1);
+
+
+---------------------------
+Context API를 잘 안쓰는 이유
+
+1. state 변경 시 쓸 데 없는 것까지 재 렌더링한다.
+  <Context>의 값이 바뀌면 그걸로 감싼 아래 컴포넌트들까지 재렌더링한다. 성능이슈
+
+2. 컴포넌트 재사용이 어려움.
+자식 컴포넌트가 Context의 값을 사용하고 있는 경우, 해당 컴포넌트를 다른 컴포넌트에
+가져와서 사용하기 애매해진다.
+
+실제로는 Redux와 같은 외부 라이브러리를 더 자주 사용한다.
+
