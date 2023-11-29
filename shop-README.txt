@@ -406,3 +406,59 @@ useEffect(()=>{
 useEffect(()=>{ 
   실행할코드
 }, [state1])
+
+--------------------------------------------
+
+리액트에서의 서버 통신과 ajax
+
+ajax를 사용하면 새로고침 없이도 GET/POST 사용 가능
+
+ajax 사용 옵션은 3개 택1
+1. XMLHttpRequest(예전)
+2. fetch() (요즘)
+3. axios (외부 라이브러리) :코드가 짧아짐
+
+이번에는 axios 사용
+설치:
+npm install axios
+
+사용:
+import axios from 'axios'
+let [axiosData, setAxiosData] = useState([]);
+...
+<button onClick={() => {
+
+  //GET 요청 시
+    axios
+      .get("https://codingapple1.github.io/shop/data2.json")
+      .then((result) => {
+        console.log(result.data);
+        setAxiosData((currentData) => {
+          currentData = [...result.data];
+          return currentData;
+        });
+      })
+      .catch(() => {
+        console.log("axios 실패함");
+      });
+
+    //POST 요청 시
+    axios.post('URL', {name : 'kim'})
+    
+    //동시에 AJAX 요청 여러개 날리기
+    Promise.all( [axios.get('URL1'), axios.get('URL2')] )
+    .then(둘 다 성공시 실행할 코드)
+
+  }}
+>
+  버튼
+</button>
+#원래 서버와의 통신은 문자열만 가능하다. 그런데 서버에서
+배열이나 오브젝트를 받을 수 있는 것은 "["이름":"name"]"처럼 문자열화 해주기 때문이다.
+이렇게 문자열화 된 오브젝트를 JSON이라고 한다.
+
+#axios는 json의 array/object화를 자동으로 해준다. fetch는 직접해줘야 한다.
+--------------------------------------------
+fetch("https://codingapple1.github.io/shop/data2.json")
+.then(결과 => 결과.json()) //json의 array/object화 필요
+.then(data => {})

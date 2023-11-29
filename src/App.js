@@ -2,6 +2,7 @@
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
 import { useState } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
+import axios from "axios";
 import "./App.css";
 import data from "./data.js";
 import Card from "./Card.js";
@@ -12,11 +13,10 @@ import EventPage from "./pages/EventPage.js";
 function App() {
   // 서버에서 가져온 데이터로 가정
   let [shoes, setShoes] = useState(data);
-  let urlList = [
-    "https://codingapple1.github.io/shop/shoes1.jpg",
-    "https://codingapple1.github.io/shop/shoes2.jpg",
-    "https://codingapple1.github.io/shop/shoes3.jpg",
-  ];
+
+  let [getCount, setGetCount] = useState(1);
+
+  let [isLoading, setIsLoading] = useState(false);
 
   let navigate = useNavigate(); //페이지 이동 용이.
 
@@ -54,7 +54,6 @@ function App() {
           </Nav>
         </Container>
       </Navbar>
-
       {/* <Link to="/" className="link">
         홈
       </Link>
@@ -75,11 +74,44 @@ function App() {
                 <div className="row">
                   {shoes.map((item, index) => {
                     return (
-                      <Card imgUrl={urlList[index]} product={shoes[index]} />
+                      // <Card imgUrl={urlList[index]} product={shoes[index]} />
+                      <Card products={shoes} index={index} />
                     );
                     // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
                   })}
                 </div>
+                {getCount != 3 ? (
+                  <button
+                    onClick={() => {
+                      axios
+                        .get(
+                          "https://codingapple1.github.io/shop/data" +
+                            (getCount + 1) +
+                            ".json"
+
+                          // "https://codingapple1.github.io/shop/data3.json"
+                        )
+                        .then((result) => {
+                          console.log(result.data);
+
+                          setIsLoading(true);
+                          setShoes((currentData) => {
+                            currentData = [...currentData, ...result.data];
+                            return currentData;
+                          });
+                          setGetCount(getCount + 1);
+                          setIsLoading(false);
+                        })
+                        .catch(() => {
+                          console.log("axios 실패함");
+                          setIsLoading(false);
+                        });
+                    }}
+                  >
+                    버튼
+                  </button>
+                ) : null}
+                {isLoading == true ? <h1>로딩 중입니다</h1> : null}
               </div>
             </>
           }
