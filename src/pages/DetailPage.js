@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { Nav } from "react-bootstrap";
 
 // let YellowBtn = styled.button`
 //   background: ${(props) => props.bg};
@@ -13,6 +14,7 @@ import styled from "styled-components";
 const DetailPage = (props) => {
   let [count, setCount] = useState(0);
   let [alertBox, setAlertBox] = useState(true);
+  let [tab, setTab] = useState(0);
 
   useEffect(() => {
     // 마운트 또는 업데이트 시 타이머 시작
@@ -77,10 +79,7 @@ const DetailPage = (props) => {
         )}
 
         {/* <YellowBtn bg={"pink"}>버튼</YellowBtn> */}
-        <button onClick={() => setCount((prevCount) => (prevCount += 1))}>
-          버튼
-        </button>
-        {count}
+
         <div className="row">
           <div className="col-md-6">
             <img
@@ -98,10 +97,60 @@ const DetailPage = (props) => {
             <button className="btn btn-danger">주문하기</button>
           </div>
 
-          <input onChange={(e) => setNum(e.target.value)} />
+          {/* <input onChange={(e) => setNum(e.target.value)} /> */}
         </div>
+        {/* 탭 */}
+        <Nav variant="tabs" defaultActiveKey="link0">
+          <Nav.Item>
+            <Nav.Link
+              eventKey="link0"
+              onClick={() => {
+                setTab(0);
+              }}
+            >
+              버튼0
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              eventKey="link1"
+              onClick={() => {
+                setTab(1);
+              }}
+            >
+              버튼1
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              eventKey="link2"
+              onClick={() => {
+                setTab(2);
+              }}
+            >
+              버튼2
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+
+        <TabContent tab={tab}></TabContent>
       </div>
     );
   }
 };
+
+const TabContent = ({ tab }) => {
+  // if (tab == 0) {
+  //   return <div>내용0</div>;
+  // }
+  // if (tab == 1) {
+  //   return <div>내용1</div>;
+  // }
+  // if (tab == 2) {
+  //   return <div>내용2</div>;
+  // }
+
+  return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab];
+};
+
 export default DetailPage;

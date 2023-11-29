@@ -409,7 +409,7 @@ useEffect(()=>{
 
 --------------------------------------------
 
-리액트에서의 서버 통신과 ajax
+11. 리액트에서의 서버 통신과 ajax
 
 ajax를 사용하면 새로고침 없이도 GET/POST 사용 가능
 
@@ -462,3 +462,13 @@ let [axiosData, setAxiosData] = useState([]);
 fetch("https://codingapple1.github.io/shop/data2.json")
 .then(결과 => 결과.json()) //json의 array/object화 필요
 .then(data => {})
+
+--------------------------------------------
+12. 탭 만들기
+
+react-bootstrap 사용
+
+1. 먼저 탭을 만든다. 그리고 그 아래 보여질 내용을 HTML에 만들었다.
+2. 보여져야 할 UI를 state로 만든다. let [tab. setTab] = useState(0)
+3. state값에 따라 내용이 바뀔 수 있도록 내용을 반환하는 컴포넌트 생성
+4. 버튼을 누를 때 스테이트 값이 바뀌고, 그 스테이트 값이 컴포넌트에 전달되도록 props작성.
