@@ -472,3 +472,21 @@ react-bootstrap 사용
 2. 보여져야 할 UI를 state로 만든다. let [tab. setTab] = useState(0)
 3. state값에 따라 내용이 바뀔 수 있도록 내용을 반환하는 컴포넌트 생성
 4. 버튼을 누를 때 스테이트 값이 바뀌고, 그 스테이트 값이 컴포넌트에 전달되도록 props작성.
+
+탭 애니메이션 만들기
+전환 애니메이션은 부착하면 애니메이션 나오는 className을 하나 만들고
+원할 때 부착하면 된다.
+
+1. 애니메이션 동작 전 className만들기
+2. 동작 후 className 만들기
+3. classname에 transition 속성 추가
+4. 원할 때 2 번 className 부착
+
+//App.css
+.start {
+  opacity: 0;
+}
+.end {
+  opacity: 1;
+  transition: opacity 0.5s;
+}

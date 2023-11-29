@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Nav } from "react-bootstrap";
+import { cleanup } from "@testing-library/react";
 
 // let YellowBtn = styled.button`
 //   background: ${(props) => props.bg};
@@ -15,6 +16,17 @@ const DetailPage = (props) => {
   let [count, setCount] = useState(0);
   let [alertBox, setAlertBox] = useState(true);
   let [tab, setTab] = useState(0);
+
+  let [pageFade, setPageFade] = useState("");
+
+  useEffect(() => {
+    let timerId = setTimeout(() => {
+      setPageFade("end");
+    }, 100);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, []);
 
   useEffect(() => {
     // 마운트 또는 업데이트 시 타이머 시작
@@ -79,61 +91,62 @@ const DetailPage = (props) => {
         )}
 
         {/* <YellowBtn bg={"pink"}>버튼</YellowBtn> */}
-
-        <div className="row">
-          <div className="col-md-6">
-            <img
-              src="https://codingapple1.github.io/shop/shoes1.jpg"
-              width="100%"
-            />
-          </div>
-          <div className="col-md-6">
-            <h4 className="pt-5">{item.title}</h4>
-            {/* url파라미터를 인덱스 값에 넣어줘야 한다. 
+        <div className={"start " + pageFade}>
+          <div className="row">
+            <div className="col-md-6">
+              <img
+                src="https://codingapple1.github.io/shop/shoes1.jpg"
+                width="100%"
+              />
+            </div>
+            <div className="col-md-6">
+              <h4 className="pt-5">{item.title}</h4>
+              {/* url파라미터를 인덱스 값에 넣어줘야 한다. 
             url파라미터를 넣어주기 위해 useParams 훅을 사용할 수 있다.*/}
 
-            <p>상품설명</p>
-            <p>120000원</p>
-            <button className="btn btn-danger">주문하기</button>
+              <p>상품설명</p>
+              <p>120000원</p>
+              <button className="btn btn-danger">주문하기</button>
+            </div>
+
+            {/* <input onChange={(e) => setNum(e.target.value)} /> */}
           </div>
+          {/* 탭 */}
+          <Nav variant="tabs" defaultActiveKey="link0">
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link0"
+                onClick={() => {
+                  setTab(0);
+                }}
+              >
+                버튼0
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link1"
+                onClick={() => {
+                  setTab(1);
+                }}
+              >
+                버튼1
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link2"
+                onClick={() => {
+                  setTab(2);
+                }}
+              >
+                버튼2
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
 
-          {/* <input onChange={(e) => setNum(e.target.value)} /> */}
+          <TabContent tab={tab}></TabContent>
         </div>
-        {/* 탭 */}
-        <Nav variant="tabs" defaultActiveKey="link0">
-          <Nav.Item>
-            <Nav.Link
-              eventKey="link0"
-              onClick={() => {
-                setTab(0);
-              }}
-            >
-              버튼0
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              eventKey="link1"
-              onClick={() => {
-                setTab(1);
-              }}
-            >
-              버튼1
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              eventKey="link2"
-              onClick={() => {
-                setTab(2);
-              }}
-            >
-              버튼2
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-
-        <TabContent tab={tab}></TabContent>
       </div>
     );
   }
@@ -150,7 +163,31 @@ const TabContent = ({ tab }) => {
   //   return <div>내용2</div>;
   // }
 
-  return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab];
+  let [fade, setFade] = useState("");
+  useEffect(() => {
+    let timerId = setTimeout(() => {
+      setFade("end");
+    }, 100);
+
+    return () => {
+      clearTimeout(timerId); //타이머 삭제
+      setFade("");
+    };
+    /*리액트 18부터는 automatic batching 기능 때문에
+      근처에 스테이트 변경 함수가 모여 있으면 모아서 한 번만 변경한다.
+      스테이트 변경이 다 되고나서 마지막에 한 번만 재 렌더링 한다.
+      타임아웃을 사용하지 않았다면 최종 결과가 "end"부착이므로
+      떼어졌다가 붙는 애니메이션이 보이지 않게 되는 것이다.
+    */
+  }, [tab]);
+
+  return (
+    // <div className="start end">
+    // <div className={`start ${fade}`}>
+    <div className={"start " + fade}>
+      {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab]}
+    </div>
+  );
 };
 
 export default DetailPage;

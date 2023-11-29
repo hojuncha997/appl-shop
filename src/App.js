@@ -1,6 +1,6 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
@@ -72,13 +72,16 @@ function App() {
               {/* 부트스트랩 그리드 사용*/}
               <div className="container">
                 <div className="row">
-                  {shoes.map((item, index) => {
-                    return (
-                      // <Card imgUrl={urlList[index]} product={shoes[index]} />
-                      <Card products={shoes} index={index} />
-                    );
-                    // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
-                  })}
+                  {/* <div className={"start " + pageFade}> */}
+                  <div className="start end">
+                    {shoes.map((item, index) => {
+                      return (
+                        // <Card imgUrl={urlList[index]} product={shoes[index]} />
+                        <Card products={shoes} index={index} />
+                      );
+                      // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+                    })}
+                  </div>
                 </div>
                 {getCount != 3 ? (
                   <button

@@ -20,7 +20,15 @@
   color: red; /* 마우스 오버 시 색상 변경 */
 }
 
-
+.start {
+  /* 안보이게 */
+  opacity : 0;
+}
+.end {
+  /* 0.5초 동안 서서히 보이게 */
+  opacity : 1;
+  transition : opacity 1.0s;
+}
 
 
 .App-logo {
