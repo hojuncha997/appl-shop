@@ -1,0 +1,427 @@
+
+ 5 분☀️
+리액트에서 자주쓰는 if문 작성패턴 5개
+(리액트 강좌 전체 메뉴)
+
+ 
+
+딱히 설명할 부분이 없어서 글로 진행합니다.
+
+ 
+
+지금까지 JSX 이용해서 html을 작성하고 있는데
+
+if문을 써서 조건부로 html을 보여주고 싶을 때가 매우 많습니다.
+
+지금까지는 삼항연산자만 주구장창 사용했는데 또 어떤 if문들을 쓸 수 있는지 맛만 보고 지나갑시다.
+
+그냥 코딩 스타일적인 부분이기 때문에 그냥 이런게 있다고 알아두기만 해도 될듯요 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+1. 컴포넌트 안에서 쓰는 if/else
+
+ 
+
+function Component() {
+  if ( true ) {
+    return <p>참이면 보여줄 HTML</p>;
+  } else {
+    return null;
+  }
+} 
+컴포넌트에서 JSX를 조건부로 보여주고 싶으면 그냥 이렇게 씁니다.
+
+우리가 자주 쓰던 자바스크립트 if문은
+
+return () 안의 JSX 내에서는 사용 불가능합니다.
+
+<div> if (어쩌구) {저쩌구} </div> 이게 안된다는 소리입니다.
+
+그래서 보통 return + JSX 전체를 퉤 뱉는 if문을 작성해서 사용합니다. 
+
+ 
+
+ 
+
+ 
+
+(참고) 근데 이렇게 쓰시려면 else 생략이 가능합니다
+
+ 
+
+function Component() {
+  if ( true ) {
+    return <p>참이면 보여줄 HTML</p>;
+  } 
+  return null;
+} 
+else와 중괄호를 하나 없애도 아까 코드와 똑같은 기능을 합니다.
+
+왜냐면 자바스크립트 function 안에선 return 이라는 키워드를 만나면 return 밑에 있는 코드는 더이상 실행되지 않으니까요.
+
+그래서 else가 필요없는 경우도 많으니 깔끔한 코드를 위해 한번 생략해보십시오.
+
+if -> else if -> else 이렇게 구성된 조건문도 if 두개로 축약가능합니다. 한번 생각해보시면 됩니다.
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+2. JSX안에서 쓰는 삼항연산자 
+
+ 
+
+영어로 간지나게 ternary operator 라고 합니다. 
+
+조건문 ? 조건문 참일때 실행할 코드 : 거짓일 때 실행할 코드
+
+이 형식에 맞춰 쓰면 끝입니다.
+
+ 
+
+ 
+
+function Component() {
+  return (
+    <div>
+      {
+        1 === 1
+        ? <p>참이면 보여줄 HTML</p>
+        : null
+      }
+    </div>
+  )
+} 
+그냥 JSX 내에서 if/else 대신 쓸 수 있다는게 장점이고 이전 강의들에서 자주 해본 것이니 설명은 스킵하도록 하겠습니다.
+
+삼항연산자는 그냥 if와는 다르게 JSX 안에서도 실행가능하며 조건을 간단히 주고 싶을 때 사용합니다.
+
+ 
+
+ 
+
+ 
+
+삼항연산자는 중첩 사용도 됩니다. 
+
+ 
+
+function Component() {
+  return (
+    <div>
+      {
+        1 === 1
+        ? <p>참이면 보여줄 HTML</p>
+        : ( 2 === 2 
+            ? <p>안녕</p> 
+            : <p>반갑</p> 
+          )
+      }
+    </div>
+  )
+} 
+else 문 안에 if/else 문을 하나 추가한 건데 제가 써놓고도 뭔소린지 모르겠군요
+
+이렇게 나중에 읽었을 때 + 남이 읽었을 때 보기싫은 코드는 좋지 않습니다.
+
+그냥 return문 바깥에서 if else 쓰신 다음 그 결과를 변수로 저장해놓고 변수를 저기 집어넣든 하십시오.
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+3. && 연산자로 if 역할 대신하기
+
+ 
+
+ 
+
+(문법) 자바스크립트에선 &&연산자라는게 있습니다.
+ 
+
+ 
+
+html 조건부로 보여줄 때 이런 경우가 많습니다.
+
+"만약에 이 변수가 참이면 <p></p>를 이 자리에 뱉고 참이 아니면 null 뱉고"
+
+UI만들 때 이런거 매우 자주 씁니다. 
+
+이걸 조금 더 쉽게 축약할 수 있습니다. && 연산자를 쓰면 됩니다.
+
+ 
+
+ 
+
+ 
+
+function Component() {
+  return (
+    <div>
+      {
+        1 === 1
+        ? <p>참이면 보여줄 HTML</p>
+        : null
+      }
+    </div>
+  )
+} 
+
+function Component() {
+  return (
+    <div>
+      { 1 === 1 && <p>참이면 보여줄 HTML</p> }
+    </div>
+  )
+}
+그래서 위의 예제 두개는 동일한 역할을 합니다.
+
+밑의 예제를 보시면 && 연산자로 조건식과 오른쪽 JSX 자료를 비교하고 있습니다.
+
+이 때, 왼쪽 조건식이 true면 오른쪽 JSX가 그 자리에 남습니다.
+
+왼쪽 조건식이 false면 false가 남습니다.
+
+(false가 남으면 HTML로 렌더링하지 않습니다)
+
+ 
+
+ 
+
+아무튼 "만약에 이 변수가 참이면 <p></p>를 이 자리에 뱉고 참이 아니면 null 뱉고"
+
+이런 상황에서 자주 쓸 수 있는 간단한 조건문입니다.
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+4. switch / case 조건문
+
+ 
+
+이것도 기본 문법인데 if문이 중첩해서 여러개 달려있는 경우에 가끔 씁니다.
+
+ 
+
+ 
+
+function Component2(){
+  var user = 'seller';
+  if (user === 'seller'){
+    return <h4>판매자 로그인</h4>
+  } else if (user === 'customer'){
+    return <h4>구매자 로그인</h4>
+  } else {
+    return <h4>그냥 로그인</h4>
+  }
+}
+▲ if문을 저렇게 연달아 여러개 써야되는 상황들이 있으면 
+
+자바스크립트 switch 문법을 이용하면 괄호를 조금 더 줄일 수 있습니다. 
+
+ 
+
+ 
+
+ 
+
+function Component2(){
+  var user = 'seller';
+  switch (user){
+    case 'seller' :
+      return <h4>판매자 로그인</h4>
+    case 'customer' :
+      return <h4>구매자 로그인</h4>
+    default : 
+      return <h4>그냥 로그인</h4>
+  }
+}
+▲ switch 문법 어떻게 쓰냐면 
+
+ 
+
+1. switch (검사할변수){} 이거부터 작성하고
+
+2. 그 안에 case 검사할변수가이거랑일치하냐 : 를 넣어줍니다.
+
+3. 그래서 이게 일치하면 case : 밑에 있는 코드를 실행해줍니다.
+
+4. default : 는 그냥 맨 마지막에 쓰는 else문과 동일합니다.
+
+ 
+
+장점은 if문 연달아쓸 때 코드가 약간 줄어들 수 있는데
+
+조건식란에서 변수하나만 검사할 수 있다는게 단점입니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+5. object/array 자료형 응용 
+
+ 
+
+"경우에 따라서 다른 html 태그들을 보여주고 싶은 경우"
+
+if문 여러개 혹은 삼항연산자 여러개를 작성해야겠죠? 근데 이렇게 작성할 수도 있습니다.
+
+ 
+
+ 
+
+ 
+
+예를 들면 쇼핑몰에서 상품설명부분을 탭으로 만든다고 합시다.
+
+탭이 뭐냐면 그냥 경우에 따라서 상품정보 / 배송정보 / 환불약관 내용을 보여주고 싶은겁니다.
+
+ 
+
+현재 state가 info면 <p>상품정보</p>
+
+현재 state가 shipping이면 <p>배송정보</p>
+
+현재 state가 refund면 <p>환불약관</p>
+
+이런걸 보여주자는겁니다.
+
+ 
+
+ 
+
+일단 state를 만들어놓고 if문으로 state를 검사하는 문법을 써야할 것 같지만
+
+이번엔 if문이 아니라 자바스크립트 object 자료형에 내가 보여주고 싶은 HTML을 다 담습니다.
+
+ 
+
+function Component() {
+  var 현재상태 = 'info';
+  return (
+    <div>
+      {
+        { 
+           info : <p>상품정보</p>,
+           shipping : <p>배송관련</p>,
+           refund : <p>환불약관</p>
+        }[현재상태]
+      }
+
+    </div>
+  )
+} 
+▲ 원래 JSX 상에서 html 태그들은 저렇게 object에 담든, array에 담든 아무 상관없습니다.
+
+암튼 이렇게 object 자료형으로 HTML을 다 정리해서 담은 다음
+
+마지막에 object{} 뒤에 [] 대괄호를 붙여서 "key값이 현재상태인 자료를 뽑겠습니다" 라고 써놓는겁니다.
+
+ 
+
+그럼 이제 현재상태라는 변수의 값에 따라서 원하는 HTML을 보여줄 수 있습니다.
+
+만약에 var 현재상태가 'info'면 info 항목에 저장된 <p>태그가 보여질 것이고
+
+만약에 var 현재상태가 'refund'면 refund 항목에 저장된 <p>태그가 보여지겠죠? 
+
+ 
+
+ 
+
+아주 간단하고 직관적인 if문이 완성되었습니다.
+
+이제 if/else 몰라도 조건부로 html 보여주기 가능 
+
+(예제에선 귀찮아서 state가 아니라 var 변수를 만들었습니다)
+
+ 
+
+ 
+
+ 
+
+혹은 변수에 저장해서 써도 깔끔해질 것 같긴 합니다 
+
+ 
+
+var 탭UI = { 
+  info : <p>상품정보</p>,
+  shipping : <p>배송관련</p>,
+  refund : <p>환불약관</p>
+}
+
+function Component() {
+  var 현재상태 = 'info';
+  return (
+    <div>
+      {
+        탭UI[현재상태]
+      }
+    </div>
+  )
+} 
+▲ 뭔가 매우 깔끔해졌습니다.
+
+실은 안깔끔합니다
+
+리액트처럼 html css js를 마구 한데 비벼서 개발하면 어떻게 해도 코드가 더러움 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+이전다음 강의
+React 리액트 기초부터 쇼핑몰 프로젝트까지!
+수강기간 : 360 Days
+78.26%
+Part 1 : 블로그 제작 & 기초 문법
+Part 2 : 쇼핑몰 프로젝트
+새로운 프로젝트 생성 & Bootstrap 사용하기이미지 넣는 법 & public 폴더 이용하기코드 길어지면 import export 하면 됩니다저번시간 숙제 해설 (Card 컴포넌트 만들기)리액트 라우터 1 : 셋팅이랑 기본 라우팅리액트 라우터 2 : navigate, nested routes, outlet리액트 라우터 3 : URL 파라미터로 상세페이지 100개 만들기styled-components 쓰면 CSS 파일 없어도 되는데Lifecycle과 useEffect 1Lifecycle과 useEffect 2리액트에서 서버와 통신하려면 ajax 1리액트에서 서버와 통신하려면 ajax 2 : post, fetch리액트에서 탭 UI 만들기멋있게 컴포넌트 전환 애니메이션 주는 법 (transition)props 싫으면 Context API 써도 됩니다장바구니 페이지 만들기 & Redux 1 : Redux Toolkit 설치Redux 2 : store에 state 보관하고 쓰는 법Redux 3 : store의 state 변경하는 법Redux 4 : state가 object/array일 경우 변경하는 법Redux 5 : 장바구니 기능 만들기 숙제 & 응용문제리액트에서 자주쓰는 if문 작성패턴 5개localStorage로 만드는 최근 본 상품 기능 1localStorage로 만드는 최근 본 상품 기능 2실시간 데이터가 중요하면 react-query성능개선 1 : 개발자도구 & lazy import성능개선 2 : 재렌더링 막는 memo, useMemo성능개선 3 : useTransition, useDeferredValuePWA 셋팅해서 앱으로 발행하기 (모바일앱인척하기)state 변경함수 사용할 때 주의점 : asyncNode+Express 서버와 React 연동하려면React 강의 나가는 말
+게시판 강좌로 돌아가기

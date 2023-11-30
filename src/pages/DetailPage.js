@@ -89,6 +89,29 @@ const DetailPage = (props) => {
     return element.id == id;
   });
 
+  useEffect(() => {
+    if (item != -1 || item != null || item != undefined) {
+      // let watched = JSON.parse(localStorage.getItem("watched"));
+      // watched.push(item.id);
+      // watched = [...new Set(watched)];
+      // localStorage.setItem("watched", JSON.stringify(watched));
+      // alert(watched);
+
+      // watched = new Set(watched) :set으로 중복 없애기
+      // watched = Array.from(watched) :다시 Array로 변환
+
+      // 이러면 근데 watched 배열의 순서가 바뀌지 않아 아래와 같이 그냥함
+
+      let watched = JSON.parse(localStorage.getItem("watched"));
+      let target = watched.indexOf(item.id);
+      if (target != null || target != undefined) {
+        watched.splice(target, 1);
+      }
+      watched.push(item.id);
+      localStorage.setItem("watched", JSON.stringify(watched));
+    }
+  }, []);
+
   if (item === null || item === undefined) {
     return <div>상품이 존재하지 않습니다.</div>;
   } else {

@@ -888,3 +888,84 @@ import { changeName, increase } from "../store/userSlice";
 ----
 사실상 지금까지 쓴 것은 Redux가 아니라 Redux toolkit이다.
 Redux가 너무 복잡해서 간편하게 만든 것이다.
+
+
+
+
+#################################
+
+16. localStorage 사용( 최근 본 상품 기능 )
+
+#################################
+
+개발자 도구  -> application 탭 -> localStorage
+로컬스토리지는 key:value 형태로 저장 가능하다.
+- 문자 데이터만 저장 가능하며 사이트별 최대 5MB까지만 저장 가능하다.
+- 유저가 브라우저를 청소하지 않는 이상 반영구적으로 남아 있다.
+- 따라서 재접속 시에도 사용이 가능하다.
+
+세션 스토리지
+- 브라우져를 끄면 저장했던 데이터가 날아간다.
+
+로컬 스토리지에 저장하는 법
+localStorage.setItem('key','value') 형식
+e.g. localStorage.setItem('age','20') //숫자를 넣어도 문자화 되어 저장된다.
+
+로컬 스토리지에서 데이터 가져오는 법
+localStorage.getItem('key')
+
+e.g. localStorage.getItem('age')
+'20'
+
+로컬 스토리지에서 데이터 삭제
+localStorage.removeItem('key')
+
+e.g. localStorage.removeItem('age')
+undefined
+
+localStorage.getItem('age')
+null
+
+로컬스토리지의 데이터를 직접 수정하는 방법은 없다.
+데이터를 꺼내서 수정하고 다시 집어 넣으면 된다.
+(세션 스토리지에 저장하려면 localStorage를 sessionStorag로 바꾸기만 하면 된다.)
+
+localStorage에는 arra/object를 저장할 수 없다.
+그러나 JSON으로 바꿔주면 문자 취급을 하기 때문에 가능하다.
+
+let obj = {name: 'kim'}
+localStorage.setItem('data', obj)
+//위처럼 넣으면 [object Object]로 ,깨져서 저장된다.
+
+따라서 아래처럼 저장해야 한다.
+localStorage.setItem('data', obj.JSON.stringfy(obj))
+data : {"name":"kim"}
+
+!
+
+그런데 이걸 다시 
+let restore = localStorage.getItem('data')로 꺼내면
+{"name":"kim"} 이렇게 되어 있다. 이것은 JSON이고 객체가 아니기 때문에
+Object 문법을 적용하려면 JSON을 다시 Obeject화 해줘야 한다.
+이 때 사용하는 함수가 JSON.parse()이다.
+
+console.log(JSON.parse(restorea)) // {name: 'kim'}
+let obj = JSON.parse(restorea)
+console.log(obj.name) // kim 오브젝트 문법 적용 가능
+
+상세페이지 들어갔을 때의 상품 번호를 localStorage에 담았다가
+메인페이지로 돌아갔을 때 꺼내서 보여준다.
+watch라는 key와 []라는 value를 사용한다.
+주의점1: 중복 상품은 담지 않는다.
+주의점2: 먼저 저장할 공간이 있어야 한다. 
+//App.j
+
+useEffect(() => {
+    if (!localStorage.getItem("watched")) {
+      localStorage.setItem("watched", JSON.stringify([]));
+      alert("localstorage에 watched 생성함");
+    } 
+  }, []);
+
+
+

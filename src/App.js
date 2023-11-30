@@ -10,6 +10,7 @@ import DetailPage from "./pages/DetailPage.js";
 import AboutPage from "./pages/AboutPage.js";
 import EventPage from "./pages/EventPage.js";
 import CartPage from "./pages/CartPage.js";
+import { useSelector } from "react-redux";
 
 // Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
 export let Context1 = createContext();
@@ -25,7 +26,19 @@ function App() {
   // Context API 실습을 위한 스테이트. 이를 DetailPage나 TabContent 컴포넌트에서 사용한다.
   let [stock, setStock] = useState([10, 11, 12]);
 
+  let localStrg = useSelector((state) => state.localStrg);
+
   let navigate = useNavigate(); //페이지 이동 용이.
+
+  useEffect(() => {
+    if (!localStorage.getItem("watched")) {
+      localStorage.setItem("watched", JSON.stringify([]));
+      alert("localstorage에 watched 생성함");
+    }
+    // else {
+    //   alert("localstorage에 watched이미 존재함");
+    // }
+  }, []);
 
   return (
     <div className="App">
@@ -84,17 +97,24 @@ function App() {
               <div className="main-bg"></div>
               {/* 부트스트랩 그리드 사용*/}
               <div className="container">
+                <div className="recent-view">
+                  recent view
+                  {localStrg.map((element, index) => {
+                    return <p>{element}</p>;
+                  })}
+                </div>
                 <div className="row">
                   {/* <div className={"start " + pageFade}> */}
-                  <div className="start end">
-                    {shoes.map((item, index) => {
-                      return (
-                        // <Card imgUrl={urlList[index]} product={shoes[index]} />
-                        <Card products={shoes} index={index} />
-                      );
-                      // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
-                    })}
-                  </div>
+                  {/* <div className="start end"> */}
+                  {/* <div className="row"> */}
+                  {shoes.map((item, index) => {
+                    return (
+                      // <Card imgUrl={urlList[index]} product={shoes[index]} />
+                      <Card products={shoes} index={index} />
+                    );
+                    // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+                  })}
+                  {/* </div> */}
                 </div>
                 {getCount != 3 ? (
                   <button

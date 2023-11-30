@@ -30,6 +30,17 @@
   transition : opacity 1.0s;
 }
 
+.recent-view {
+  
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-style: italic;
+  background: red;
+  width: 400px;
+  height: 300px;
+}
+
 
 .App-logo {
   height: 40vmin;
