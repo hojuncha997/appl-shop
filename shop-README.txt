@@ -1148,3 +1148,101 @@ function App() {
   )
 
 
+
+#################################
+
+18. 성능개선1: 개발자 도구 & lazy import(lazy(), <Suspense>)
+
+#################################
+
+18-1.
+일반 개발자 도구 element로는 컴포넌트 구조를 확인하기 어렵다.
+이를 원하는 경우엔느 크롬 웹 스토어에서 React Developer Tools를 설치한다.
+
+이제 개발자 도구에서 component탭을 클릭한다.
+컴포넌트 구조가 보일 뿐만 아니라, 돋보기로 페이지의 특정 부분을 클릭하거나 호버 하면
+컴포넌트의 위치와 props들까지 보여준다.
+props란에서 값으 변경할 수도 있고
+hooks 란에서 스테이트들도 확인할 수 있다.
+
+컴포넌트를 클릭하고 우측 상단의 <>을 누르며 소스 탭으로 이동하여 위치를 바로 보여준다.
+
+
+profiler 탭도 생성되는데, 이는 성능이 저하되는 느린 컴포넌트를 찾는데 사용된다.
+O 버튼을 눌러 녹화를 시작하고 앱을 사용한 뒤, 다시 O 버튼을 눌러 녹화를 멈춘다.
+이러면 사이트 조작 시 렌더링 됐던 컴포넌트들이 시간을 바 형태로 기록해준다.
+이를 클릭 등으로 확인하여 성능 저하를 일으키는 컴포넌트를 찾을 수 있다.
+
+일반적으로 이 탭을 활용할 일은 많지 않다.
+대부분의 경우 페이지의 지연을 발생시키는 것은 ajax 요청이다.
+
+--
+
+크롬 확장에서 Redux DevTools를 설치하여 사용할 수도 있다.
+이를 사용하면 리덕스 관련 탭을 사용할 수 있다.
+- store를 한 눈에 보여주고,
+- state 변경한 내역을 알려준다,.
+
+
+
+18-2. 성능 개선
+SPA의 특징은 발행하면 js 파일 하나에 모든 코드를 합쳐 놓는다.
+따라서 사이즈가 매우 크다.
+
+유저가 메인 페이지에 접속하면
+1. html 파일
+2. css 파일
+3. 큰 js파일
+
+을 다운 받는다. 따라서 로딩 속도가 느리다.
+
+따라서 이 JS 파일을 분해해 놓으면 성능을 개선할 수 있다.
+
+메인페이지인 App.js를 로드할 때, DetailPage.js와 CartPage.js 컴포넌트는
+로드할 필요 없다. 
+
+따라서 이런 컴포넌트들을 lazy 하게 로드하라고 할 수 있다.
+
+import DetailPage from "./pages/DetailPage.js";
+import CartPage from "./pages/CartPage.js";
+
+이런 코드를
+import {lazy} from "react"
+
+const DetailPage = lazy(() => import("./pages/DetailPage.js"))
+const CartPage = lazy(() => import("./pages/CartPage.js"))
+
+이렇게 해놓으면, 해당 컴포넌트가 필요해질 때 import하라는 뜻이다.
+이렇게 해 놓으면 사이트 발행 시에도 별도의 js파일로 분리된다.
+
+* 단, 이는 변수화 되었으므로 파일 내에서 반드시 import 문의 아래에 위치해야 한다!
+
+
+그러나 이렇게 해 놓으면 유저가 CartPage, DetailPage로 이동할 때,
+컴포넌트 로딩 시간이 발생한다. 이 때문에 사용자가 흰 화면을 보게 되거나,
+컴포넌트가 제 때 로딩되지 않아 오류가 발생할 수도 있다.
+
+이를 위해 <Suspense>를 사용하여 그 간격을 메꾼다.
+
+아래와 같이 사용할 수 있다.
+//App.js
+import {Suspense} from "react"
+...
+return (
+  ...
+<Route
+  path="/cart"
+  element={
+    <Suspense fallback={<div>로딩 중임</div>}>
+      <CartPage />
+    </Suspense>
+  }
+/>
+
+
+그런데 이렇게 보통은 <Routes> 전체를 감싸는 게 일반적이다.
+    <Suspense fallback={<div>로딩 중임</div>}>
+      <Routes>
+      ...
+      </Routes>
+    </Suspense>

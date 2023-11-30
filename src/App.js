@@ -1,17 +1,21 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Nav, Navbar, Container } from "react-bootstrap";
-import { useState, useEffect, createContext } from "react";
+import { lazy, Suspense, useState, useEffect, createContext } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
 import data from "./data.js";
 import Card from "./Card.js";
-import DetailPage from "./pages/DetailPage.js";
 import AboutPage from "./pages/AboutPage.js";
 import EventPage from "./pages/EventPage.js";
-import CartPage from "./pages/CartPage.js";
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
+
+// lazy로딩으로 변경
+// import DetailPage from "./pages/DetailPage.js";
+// import CartPage from "./pages/CartPage.js";
+const DetailPage = lazy(() => import("./pages/DetailPage.js"));
+const CartPage = lazy(() => import("./pages/CartPage.js"));
 
 // Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
 export let Context1 = createContext();
@@ -119,99 +123,107 @@ function App() {
       <Link to="/detail" className="link">
         상세페이지
       </Link> */}
+      <Suspense fallback={<div>로딩 중임</div>}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                {/* 이미지 삽입 */}
+                <div className="main-bg"></div>
+                {/* 부트스트랩 그리드 사용*/}
+                <div className="container">
+                  <div className="recent-view">
+                    recent view
+                    {localStrg.map((element, index) => {
+                      return <p>{element}</p>;
+                    })}
+                  </div>
+                  <div className="row">
+                    {/* <div className={"start " + pageFade}> */}
+                    {/* <div className="start end"> */}
+                    {/* <div className="row"> */}
+                    {shoes.map((item, index) => {
+                      return (
+                        // <Card imgUrl={urlList[index]} product={shoes[index]} />
+                        <Card products={shoes} index={index} />
+                      );
+                      // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
+                    })}
+                    {/* </div> */}
+                  </div>
+                  {getCount != 3 ? (
+                    <button
+                      onClick={() => {
+                        axios
+                          .get(
+                            "https://codingapple1.github.io/shop/data" +
+                              (getCount + 1) +
+                              ".json"
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              {/* 이미지 삽입 */}
-              <div className="main-bg"></div>
-              {/* 부트스트랩 그리드 사용*/}
-              <div className="container">
-                <div className="recent-view">
-                  recent view
-                  {localStrg.map((element, index) => {
-                    return <p>{element}</p>;
-                  })}
-                </div>
-                <div className="row">
-                  {/* <div className={"start " + pageFade}> */}
-                  {/* <div className="start end"> */}
-                  {/* <div className="row"> */}
-                  {shoes.map((item, index) => {
-                    return (
-                      // <Card imgUrl={urlList[index]} product={shoes[index]} />
-                      <Card products={shoes} index={index} />
-                    );
-                    // return <Card index={index} product={shoes[index]} 도 고려 가능. src는 컴포넌트에 고정/>;
-                  })}
-                  {/* </div> */}
-                </div>
-                {getCount != 3 ? (
-                  <button
-                    onClick={() => {
-                      axios
-                        .get(
-                          "https://codingapple1.github.io/shop/data" +
-                            (getCount + 1) +
-                            ".json"
+                            // "https://codingapple1.github.io/shop/data3.json"
+                          )
+                          .then((result) => {
+                            console.log(result.data);
 
-                          // "https://codingapple1.github.io/shop/data3.json"
-                        )
-                        .then((result) => {
-                          console.log(result.data);
-
-                          setIsLoading(true);
-                          setShoes((currentData) => {
-                            currentData = [...currentData, ...result.data];
-                            return currentData;
+                            setIsLoading(true);
+                            setShoes((currentData) => {
+                              currentData = [...currentData, ...result.data];
+                              return currentData;
+                            });
+                            setGetCount(getCount + 1);
+                            setIsLoading(false);
+                          })
+                          .catch(() => {
+                            console.log("axios 실패함");
+                            setIsLoading(false);
                           });
-                          setGetCount(getCount + 1);
-                          setIsLoading(false);
-                        })
-                        .catch(() => {
-                          console.log("axios 실패함");
-                          setIsLoading(false);
-                        });
-                    }}
-                  >
-                    버튼
-                  </button>
-                ) : null}
-                {isLoading == true ? <h1>로딩 중입니다</h1> : null}
-              </div>
-            </>
-          }
-        />
-        {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
-        {/* <Route path="/detail" element={<DetailPage shoes={shoes} />} /> */}
-        {/* url파라미터 사용: 아무거나 넣을 수 있음. */}
-        <Route
-          path="/detail/:id"
-          element={
-            <Context1.Provider value={{ stock, shoes }}>
-              <DetailPage shoes={shoes} />
-              {/* 여기 안의 모든 컴포넌트는 stock, shoes 사용가능 */}
-            </Context1.Provider>
-          }
-        />
+                      }}
+                    >
+                      버튼
+                    </button>
+                  ) : null}
+                  {isLoading == true ? <h1>로딩 중입니다</h1> : null}
+                </div>
+              </>
+            }
+          />
+          {/* <Route path="/detail" element={<div>상세페이지</div>} /> */}
+          {/* <Route path="/detail" element={<DetailPage shoes={shoes} />} /> */}
+          {/* url파라미터 사용: 아무거나 넣을 수 있음. */}
 
-        <Route path="/about" element={<AboutPage />}>
-          <Route path="member" element={<div>멤버</div>} />
-          <Route path="location" element={<div>로케</div>} />
-        </Route>
+          <Route
+            path="/detail/:id"
+            element={
+              <Context1.Provider value={{ stock, shoes }}>
+                <DetailPage shoes={shoes} />
+                {/* 여기 안의 모든 컴포넌트는 stock, shoes 사용가능 */}
+              </Context1.Provider>
+            }
+          />
 
-        <Route path="/event" element={<EventPage />}>
-          <Route path="one" element={<div>첫 주문 시 양배추즙 서비스</div>} />
-          <Route path="two" element={<div>생일기념 쿠폰 받기</div>} />
-        </Route>
+          <Route path="/about" element={<AboutPage />}>
+            <Route path="member" element={<div>멤버</div>} />
+            <Route path="location" element={<div>로케</div>} />
+          </Route>
 
-        <Route path="/cart" element={<CartPage />} />
+          <Route path="/event" element={<EventPage />}>
+            <Route path="one" element={<div>첫 주문 시 양배추즙 서비스</div>} />
+            <Route path="two" element={<div>생일기념 쿠폰 받기</div>} />
+          </Route>
 
-        {/* "*" 적힌 경로 외의 모든 경로에 대해서 */}
-        <Route path="*" element={<div>404</div>} />
-      </Routes>
+          <Route
+            path="/cart"
+            element={
+              // <Suspense fallback={<div>로딩 중임</div>}> Routes 전체 다 감싸기로함.
+              <CartPage />
+            }
+          />
+
+          {/* "*" 적힌 경로 외의 모든 경로에 대해서 */}
+          <Route path="*" element={<div>404</div>} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }
