@@ -11,11 +11,40 @@ import AboutPage from "./pages/AboutPage.js";
 import EventPage from "./pages/EventPage.js";
 import CartPage from "./pages/CartPage.js";
 import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
 
 // Context로 감싼 컴포넌트에서 가져다 써야 하기 때문에 export 해야 한다
 export let Context1 = createContext();
 
 function App() {
+  let result = useQuery(
+    "작명",
+    () =>
+      axios.get("https://codingapple1.github.io/userdata.json").then((a) => {
+        console.log("요청됨");
+        return a.data;
+      }),
+    // 2초 내에는 refetch 되지 않음
+    { staleTime: 2000 }
+  );
+
+  /*
+  result.data; //성공 시 가져오는 데이터가 들어 있음.
+  result.isLoading; //로딩 중이면 true
+  result.error; //에러 발생했으면 true
+
+  장점1. 성공/실패/로딩중 쉽게 파악 가능
+  장점2. 자동으로 refetch 해준다.( refetch 주기 설정, on/off 설정 가능 )
+  장점3. 실패 시 자동으로 retry 해준다.
+  장점4. state 공유 안해도 된다.
+      state로 공유하지 않고 useQuery로 ajax 요청을 몇 군데서 해도 된다. 
+      예를 들면 동일한 경로로 똑같은 쿼리를 날리는 코드가 두 개가 있다고 하자.
+      그러나 react-query는 같은 곳으로 두 번 쿼리를 날리지 않는다. 합쳐서 한 번만 한다.
+      따라서 비효율이 발생하지 않는다.
+  장점5. ajax 결과 캐싱이 가능하다.
+      두 군데서 useQuery()를 통해 값을 요청했을 경우, 먼저 값을 가져온 코드에서 ajax 요청결과를 캐싱했다가
+      아직 가져오지 않은 곳에다 보여준다.
+*/
   // 서버에서 가져온 데이터로 가정
   let [shoes, setShoes] = useState(data);
 
@@ -78,6 +107,9 @@ function App() {
             >
               뒤로 가기
             </Nav.Link>
+          </Nav>
+          <Nav className="ms-auto">
+            {result.isLoading ? "로딩 중" : result.data.name}
           </Nav>
         </Container>
       </Navbar>
