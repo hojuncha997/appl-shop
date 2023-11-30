@@ -960,12 +960,151 @@ watch라는 key와 []라는 value를 사용한다.
 주의점2: 먼저 저장할 공간이 있어야 한다. 
 //App.j
 
+import { useSelector } from "react-redux";
+  let localStrg = useSelector((state) => state.localStrg);
+...
 useEffect(() => {
     if (!localStorage.getItem("watched")) {
       localStorage.setItem("watched", JSON.stringify([]));
       alert("localstorage에 watched 생성함");
     } 
   }, []);
+
+...
+  <div className="recent-view">
+                  recent view
+                  {localStrg.map((element, index) => {
+                    return <p>{element}</p>;
+                  })}
+                </div>
+
+
+
+//DetailPage
+
+useEffect(() => {
+    if (item != -1 || item != null || item != undefined) {
+      // let watched = JSON.parse(localStorage.getItem("watched"));
+      // watched.push(item.id);
+      // watched = [...new Set(watched)];
+      // localStorage.setItem("watched", JSON.stringify(watched));
+      // alert(watched);
+
+      // watched = new Set(watched) :set으로 중복 없애기
+      // watched = Array.from(watched) :다시 Array로 변환
+
+      // 이러면 근데 watched 배열의 순서가 바뀌지 않아 아래와 같이 그냥함
+
+      let watched = JSON.parse(localStorage.getItem("watched"));
+      let target = watched.indexOf(item.id);
+      if (target != null || target != undefined) {
+        watched.splice(target, 1);
+      }
+      watched.push(item.id);
+      localStorage.setItem("watched", JSON.stringify(watched));
+    }
+  }, []);
+
+
+//localStorageSlice.js
+
+import { createSlice } from "@reduxjs/toolkit";
+
+let localStrg = createSlice({
+  name: "localStrg",
+  initialState: JSON.parse(localStorage.getItem("watched")),
+  reducers: {
+    getWatchedList(state, action) {
+      //   console.log("state.cart.initialState", state.cart.initialState); 틀린 표현
+    },
+  },
+});
+export let { getWatchedList } = localStrg.actions;
+export default localStrg;
+
+
+
+//store.js
+
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+import user from "./store/userSlice";
+import cart from "./store/cartSlice";
+import localStrg from "./store/localStorageSlice";
+
+let stock = createSlice({
+  name: "stock",
+  initialState: [10, 11, 12],
+});
+
+export default configureStore({
+  reducer: {
+    // 작명: sliceName.reduce (reducer를 꼭 붙여줘야 함)
+    user: user.reducer,
+    stock: stock.reducer,
+    cart: cart.reducer,
+    localStrg: localStrg.reducer,
+  },
+});
+
+
+#################################
+이렇게 localStorage를 사용하는 게 편리하다 보니
+모든 state를 자동으로 localStorage에 저장하는 라이브러리도 생겨났음.
+
+예를 들어 redux를 사용하는 경우, redux-persist 와 같은 라이브러리를 사용하면
+거의 모든 state들을 localStorage에 저장할 수 있다.
+
+참고로 redux와 같은 라이브러리를 state 관리 라이브러리라고 한다.
+Jotai, Zustand 등이 있으며 redux보다 더 쉽다.
+
+
+
+
+
+#################################
+
+17. 리액트 쿼리 (react-query)
+
+#################################
+
+서버와 통신 시 응용 기능들이 필요할 수 있다.
+예를 들어,
+
+- ajax 성공 시/ 실패 시 HTML 보여주려면?
+- 몇 초마다 자동으로 ajax 요청
+- 실패 시 몇 초 후 요청 재시도?
+- 다음 페이지 내용을 미리 가져올까(prefetch)
+
+이런 것들은 라이브러리를 사용하지 않고도 구현할 수 있지만, 
+react query 와 같은 라이브러리를 사용하면 좀 더 쉽게 구현할 수 있다.
+
+이러한 react query는 SNS나 코인 거래처럼 실시간 데이터가 중요한 경우에 자주 쓰인다.
+모든 사이트에서 자주 사용되는 것은 아니다.
+
+1. 설치
+npm install react-query
+
+2. 세팅
+//index.js
+
+import { QueryClient } from "react-query";
+const queryClient = new QueryClient(); //
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  // <React.StrictMode>
+  <QueryClientProvider client={queryClient}> //
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </QueryClientProvider>
+  // </React.StrictMode>
+);
+reportWebVitals();
+
+3. 사용 세팅은 끝. 이제 개별 컴포넌트에서 사용해야 한다.
 
 
 
