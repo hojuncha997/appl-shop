@@ -48,6 +48,13 @@ function App() {
             >
               Detail
             </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              Cart
+            </Nav.Link>
 
             <Nav.Link
               onClick={() => {
@@ -73,7 +80,6 @@ function App() {
           path="/"
           element={
             <>
-              {" "}
               {/* 이미지 삽입 */}
               <div className="main-bg"></div>
               {/* 부트스트랩 그리드 사용*/}

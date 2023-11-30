@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeName, increase } from "../store/userSlice";
-import { increaseCount } from "../store/cartSlice";
+import { increaseCount, decreaseCount } from "../store/cartSlice";
 
 const CartPage = () => {
   // (state) => {return state} 일반적으로 이렇게 적어놓고 시작한다.
@@ -61,6 +61,13 @@ const CartPage = () => {
                     }}
                   >
                     +
+                  </button>
+                  <button
+                    onClick={() => {
+                      dispatch(decreaseCount(element.id));
+                    }}
+                  >
+                    -
                   </button>
                 </td>
               </tr>

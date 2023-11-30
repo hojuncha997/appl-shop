@@ -884,3 +884,7 @@ import user from "./store/userSlice";
 
 //CartPage.js: 임포트 경로 수정
 import { changeName, increase } from "../store/userSlice";
+
+----
+사실상 지금까지 쓴 것은 Redux가 아니라 Redux toolkit이다.
+Redux가 너무 복잡해서 간편하게 만든 것이다.
