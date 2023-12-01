@@ -1246,3 +1246,100 @@ return (
       ...
       </Routes>
     </Suspense>
+
+#################################
+
+19. 성능개선1: 재렌더링 막는 memo, useMemo
+
+#################################
+
+19-1. memo
+
+컴포넌트가 재렌더링 되면 거기 안에 있ㄴ느 자식 컴포넌트도 재렌더링 된다.
+자식 컴포넌트가 무겁다면 부모 컴포넌트가 바뀔 때마다 느리게 된다.
+그럴 땐 자식 컴포넌트를 memo로 감싸 놓으면 된다.
+
+예시)
+
+//CartPage.js
+
+import {useState} from 'react'
+function Child(){
+  console.log('재렌더링됨')
+  return <div>자식임</div>
+}
+
+function CartPage(){ 
+
+  let [count, setCount] = useState(0)
+
+  return (
+    <Child />
+    {/* 버튼을 누를 때마다 CartPage가 재렌더링 되고, 그 떄마다 Child로 재렌더링 된다.*/}
+    <button onClick={()=>{ setCount(count+1) }}> + </button>
+  )
+}
+
+----
+
+//CartPage.js
+
+import {useState, memo} from 'react'
+//memo로 함수를 감싼다. 이러면 필요할 때만 재렌더링한다.
+let Child = memo(function(){
+  console.log('재렌더링됨')
+  return <div>자식임</div>
+})
+
+function CartPage(){ 
+
+  let [count, setCount] = useState(0)
+
+  return (
+    <Child />
+    {/* 버튼을 누를 때마다 CartPage가 재렌더링 되고, 그 떄마다 Child로 재렌더링 된다.*/}
+    <button onClick={()=>{ setCount(count+1) }}> + </button>
+  )
+}
+
+memo는 특정 상황에서만 재렌더링 한다. 
+Child로 전달되는 Props가 변경되는 경우에만 재렌더링 한다.
+예를 들어 위 코드에서 <Child count={count}> 한다면, count 값이 변하므로 재렌더링 할 것이다.
+
+*memo는 헛된 재렌더링을 막기 위해 기존 props와 변경된 props를 비교하는 연산을 한다.
+만약 props가 크고 복잡하다면 부담이 더 커질 수 있다.
+
+따라서 꼭 필요한 경우에만 사용한다.
+
+-----
+
+19-2. useMemo : 컴포넌트 로드 시 1회만 실행하고 싶은 경우 사용.
+
+useEffect와 비슷한 용도로 사용한다.
+
+import {useMemo, useState} from 'react'
+
+function 함수(){
+  return 반복문10억번돌린결과
+}
+
+function Cart(){ 
+
+  {/* useMemo로 감쌌다.*/}
+  let result = useMemo(()=>{ return 함수() }, [])
+
+  return (
+    <Child />
+    <button onClick={()=>{ setCount(count+1) }}> + </button>
+  )
+}
+
+--
+
+useEffect처럼 의존성을 추가할 수도 있다. 추가하면 해당 값이 변경할 때도 재렌더링 된다.
+let result = useMemo(()=>{ return 함수() }, [state])
+
+
+useEffect와의 차이는 실행 시점의 차이다.
+useEffect는 HTML 렌더링이 완료된 후에야 실행된다.
+useMemo는 렌더링 시 같이 수행된다.

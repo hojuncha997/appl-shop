@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeName, increase } from "../store/userSlice";
 import { increaseCount, decreaseCount } from "../store/cartSlice";
+
+// 자식 컴포넌트 재렌더링 막기
+const Child = () => {
+  return <div>자식임</div>;
+};
 
 const CartPage = () => {
   // (state) => {return state} 일반적으로 이렇게 적어놓고 시작한다.
@@ -23,9 +29,17 @@ const CartPage = () => {
   //dispatch(stateName())
   let dispatch = useDispatch();
   console.log(cart);
+  let [count, setCount] = useState(0);
 
   return (
     <div>
+      <Child></Child>
+      <button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      ></button>
+
       <h6>{user.name}의 장바구니</h6>
       <button
         onClick={() => {
