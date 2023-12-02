@@ -49,6 +49,15 @@ function App() {
       두 군데서 useQuery()를 통해 값을 요청했을 경우, 먼저 값을 가져온 코드에서 ajax 요청결과를 캐싱했다가
       아직 가져오지 않은 곳에다 보여준다.
 */
+
+  let [count, setCount] = useState(0);
+  let [age, setAge] = useState(20);
+  useEffect(() => {
+    if (count != 0 && count < 3) {
+      setAge(age + 1);
+    }
+  }, [count]);
+
   // 서버에서 가져온 데이터로 가정
   let [shoes, setShoes] = useState(data);
 
@@ -75,6 +84,17 @@ function App() {
 
   return (
     <div className="App">
+      <div>
+        <div>안녕하십니까 전 {age}</div>
+        <button
+          onClick={() => {
+            setCount(count + 1);
+          }}
+        >
+          누르면한살먹기
+        </button>
+      </div>
+
       {/* <Button variant="primary">Primary</Button> */}
       <Navbar bg="light">
         <Container>

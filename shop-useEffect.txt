@@ -1,0 +1,109 @@
+
+
+9. 컴포넌트의 LifeCycle
+
+mount - update - unmout
+
+이 과정의 중간에 코드를 실행해줄 수 있다. 갈고리(hook)을 달아서 
+마운트 시 코드 실행, 업데이트 시 코드 실행, 언마운트 시 실행할 수 있다.
+이러한 갈고리를 Lifecycle Hook이라고 부른다.
+
+클래스형 컴포넌트 생성 시 아래와 같이 적어줬었다.
+
+class Detail2 extends React.Component {
+  componentDidMount(){
+    //Detail2 컴포넌트가 로드되고나서 실행할 코드
+  }
+  componentDidUpdate(){
+    //Detail2 컴포넌트가 업데이트 되고나서 실행할 코드
+  }
+  componentWillUnmount(){
+    //Detail2 컴포넌트가 삭제되기전에 실행할 코드
+  }
+}
+
+함수형 컴포넌트에서는 아래와 같이 사용한다.
+
+import {useEffect} from "react";
+function DetailPage(props) {
+  useEffect(()=> {
+    //DetailPage컴포넌트가 mount, update(재렌더링) 시 실행된다.
+
+  })
+}
+
+10. useEffect의 사용 이유
+
+useEffect는 실행 시점이 다르다.
+useEffect는 HTML렌더링이 전부 끝난 다음에야 실행된다.
+만약 복잡한 연산 코드가 존재한다고 할 때, 그걸 useEffect 바깥에 적어주면,
+HTML이 렌더링 되기 전에 그 작업을 수행하므로, UX가 좋지 않다.
+
+그러나 useEffect 내부에 그 코드를 적어 주면 HTML이 전부 렌더링 된 다음에야
+실행되므로 UX가 전자에 비해 향상된다. 따라서 아래의 작업에 자주 사용된다.
+
+- 어려운 연산
+- 서버에서 데이터를 가져오는 작업
+- 타이머 장착
+
+Effect가 붙은 이유.
+useEffect가 SideEffect를 담당하기 때문이다. SideEffect는 부가적인 코드가 아닌 코드들이다.
+
+부가(타이며 활용법)
+setTimeout(() => {실행할 코드}, 1000)
+
+예시)
+
+  useEffect(() => {
+    // 마운트 또는 업데이트 시 타이머 시작
+    setTimeout(() => {
+      setAlert((currentState) => (currentState = false));
+
+      // setAlert((currentState) => !currentState); 이 코드는 작동X
+    }, 2000);
+  }, []); 
+
+  여기서 두 번째 파라미터는 의존성(dependency) 배열이다.
+  - 만약 의존성 배열을 파라미터로 넣어주지 않는다면, 해당 컴포넌트가 mount, update될 때마다 실행된다.
+  - 빈 배열만 파라미터로 넣어준다면 mount될 때만 실행된다. update시에는 실행되지 않는다.(1회만 실행 원할 떄)
+  - 그런데 만약 []을 넣어주고 그 안에 변수(의존성)을 추가해주면, 해당 변수가 변할 때만 실행해준다.
+
+    useEffect(() => {
+    // 마운트 또는 업데이트 시 타이머 시작
+    setTimeout(() => {
+      setAlert((currentState) => (currentState = false));
+
+      console.log("1");
+    }, 2000);
+  }, [count]); //count 추가. 버튼을 눌러 count가 변할 때마다 실행된다.
+
+  
+
+
+  1. 이러면 재렌더링마다 코드를 실행가능합니다.
+useEffect(()=>{ 실행할코드 })
+
+
+  2. 이러면 컴포넌트 mount시 (로드시) 1회만 실행가능합니다.
+useEffect(()=>{ 실행할코드 }, [])
+
+3. 이러면 useEffect 안의 코드 실행 전에 항상 실행됩니다. 
+useEffect(()=>{ 
+  return ()=>{
+    실행할코드
+  }
+})
+
+4. 이러면 컴포넌트 unmount시 1회 실행됩니다.
+useEffect(()=>{ 
+  return ()=>{
+    실행할코드
+  }
+}, [])
+
+5. 이러면 state1이 변경될 때만 실행됩니다. 
+useEffect(()=>{ 
+  실행할코드
+}, [state1])
+
+--------------------------------------------
