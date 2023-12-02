@@ -1,0 +1,456 @@
+
+리액트를 내가 만든 서버에서 사용하고 싶으면 어떻게 하는지 알아봅시다. 
+
+이번 강의 빠른 요약부터 하자면
+
+서버는 유저가 메인페이지로 접속하면 리액트로 만든 html 파일을 보내주면 그게 연동 끝입니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+서버는 누가 html 파일 요청하면 보내주는 간단한 프로그램입니다.
+
+ 
+
+진짜로 서버는 별거 아니고 어떤 고객이 codingapple.com으로 접속하면 거기맞는 html을 보내주는 기계일 뿐입니다.
+
+임시 서버를 Nodejs + Express로 쉽게 만들어봅시다. 
+
+ 
+
+1. 구글검색해서 nodejs 설치
+
+2. 작업폴더만들고 에디터로 오픈
+
+3. server.js 파일을 만들고 아래 코드 작성
+
+ 
+
+const express = require('express');
+const path = require('path');
+const app = express();
+
+app.listen(8080, function () {
+  console.log('listening on 8080')
+}); 
+ 
+
+4. 터미널을 열어서 npm init -y 입력 
+
+5. npm install express 이것도 입력  
+
+ 
+
+이러면 웹서버만들기 끝입니다.
+
+서버 미리보기 띄우고 싶으면 터미널열어서 nodemon server.js를 입력합니다.
+
+nodemon 이런게 없으면 node server.js 입력해야합니다.
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+리액트는 HTML을 이쁘게 만들어주는 툴입니다. 
+
+ 
+
+왜 쓰는지도 모르고 리액트 배우는 사람들이 많은데 
+
+리액트는 대단한거 아니고 앱처럼 부드럽게 동작하는 html을 만들고 싶을 때 사용하는 툴입니다.
+
+ 
+
+ 
+
+
+
+ 
+
+▲ 카톡 같은 모바일 앱 생각해보면
+
+그런 앱들은 새로고침 없이 페이지 전환이 샥샥 되죠?
+
+그런 식으로 새로고침할 필요없이 부드럽게 전환되는 사이트를 만들고 싶을 때 리액트 쓰면 됩니다. 
+
+그런 사이트를 전문용어로 Single Page Application 이라고 합니다. 
+
+쌩자바스크립트로도 가능한데 코드 길어져서 귀찮아서 리액트 쓰는 것임
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+리액트 프로젝트 만드는 법 
+
+ 
+
+지금 하고 있는 server.js 옆에 서브폴더로 리액트 프로젝트를 하나 만들어봅시다. 
+
+0. 구글 검색해서 nodejs 최신버전 설치하고 
+
+1. 터미널에 npx create-react-app 프로젝트명 을 입력합니다. 프로젝트명 자유작명하셈 다만 작명할 때 띄어쓰기하지마십시오. 
+
+2. 그럼 서브폴더에 리액트 프로젝트가 생성되는데 그걸 다시 에디터로 오픈합니다.
+
+3. 리액트 문법으로 열심히 만들고 싶은걸 개발해봅니다. 개발시 코드를 미리보고 싶으면 npm run start 를 입력합니다.   
+
+4. 개발 완료되면 리액트 프로젝트 터미널에 npm run build를 입력하면 리액트 완성본 html 파일이 build 폴더내에 생성됩니다.
+
+그 html 파일을 서버에서 필요할 때 유저에게 보내주면 됩니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+리액트로 만든 HTML 전송하는법 
+
+ 
+
+무슨 서버언어를 쓰든간에 
+
+리액트로 개발한 html파일을 고객에게 보내주면 그게 서버랑 리액트 합치는거 끝입니다. 
+
+ 
+
+ 
+
+
+
+ 
+
+▲ 리액트로 개발을 다 마친 후 npm run build 라는걸 하시면 build라는 폴더가 생기고 안에 html css js 파일이 생성됩니다.
+
+그 중에 html 파일은 사진에 보이는 index.html 파일 딱 하나입니다. 
+
+왜냐면 기본적인 리액트 프로젝트는 SPA라는걸 만들어주는데
+
+SPA는 기본적으로 html 파일 하나만 씁니다. 
+
+ 
+
+ 
+
+ 
+
+이걸 서버에다가 이렇게 코드를 짜면 
+
+(server.js)
+어떤 놈이 메인페이지로 접속하면 저거 리액트로 build한 index.html 보내주셈
+리액트와 Nodejs 서버 합치기 끝입니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+▲ 예를 들면 폴더구조를 이렇게 만들었다고 칩시다.
+
+server.js 옆에다가 react-project라는 폴더명으로 리액트 프로젝트를 하나 만든겁니다. 
+
+그럼 안에 build한 파일들이 있겠죠?
+
+ 
+
+이렇게 되어있는 경우 코드를 어떻게 짜냐면  
+
+(server.js에 추가)
+app.use(express.static(path.join(__dirname, 'react-project/build')));
+
+app.get('/', function (요청, 응답) {
+  응답.sendFile(path.join(__dirname, '/react-project/build/index.html'));
+});
+express.static이라는걸 쓰시면 특정 폴더안의 파일들을 static 파일로 고객들에게 잘 보내줄 수 있습니다. 
+
+그럼 아마 build 폴더 안의 css js img 파일들도 잘 사용할 수 있겠죠. 
+
+그리고 늘 하던대로 누군가 / 페이지로 접속하면 리액트로 만든 html 보내주는겁니다.
+
+그럼 localhost:8080 으로 접속하시면 리액트 프로젝트가 나옵니다. 합치기 끝
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Q. 리액트에서 라우팅을 담당하는 경우?
+
+ 
+
+서버에서도 라우팅을 담당해줄 수 있고 
+
+리액트에서도 라우팅을 담당해줄 수 있습니다. 리액트는 react-router-dom을 설치하면 됩니다.
+
+그럼 리액트상에서 누가 /list 로 접속하면 글목록 보여주고 /mypage 접속하면 마이페이지도 보여줄 수 있습니다. 
+
+ 
+
+근데 리액트 라우터로 /list 페이지를 개발해놨는데 실제 localhost:8080/list 로 직접 URL 입력해서 접속하면 아무것도 안뜹니다. 
+
+왜냐면 브라우저 URL창에 때려박는건 서버에게 요청하는거지 리액트 라우터에게 라우팅 요청하는게 아니기 때문입니다. 
+
+이걸 리액트가 라우팅하게 전권을 넘기고 싶다면 server.js 에 다음과 같은 코드를 밑에 추가하십시오. 
+
+ 
+
+(server.js에 추가)
+
+app.get('*', function (요청, 응답) {
+  응답.sendFile(path.join(__dirname, '/react-project/build/index.html'));
+});
+별표 * 라는 것은 모든 문자라는 뜻입니다. 
+
+"고객이 URL란에 아무거나 입력하면 걍 리액트 프로젝트나 보내주셈"이라는 뜻인데 이렇게 하면 리액트 라우팅 잘됩니다. 
+
+이 코드는 항상 가장 하단에 놓아야 잘됩니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Q. 리액트에서 DB데이터 보여주고 싶으면? 
+
+ 
+
+예를 들어서 DB에서 글목록 데이터를 꺼내서 HTML로 보여주고 싶은 경우
+
+server-side rendering / client-side rendering 둘 중 하나 선택하면 됩니다. 
+
+ 
+
+server-side rendering은 html을 서버가 만들어서 보내주는 겁니다. 
+
+nodejs 강의처럼
+
+1. DB에서 데이터 뽑아서
+
+2. 글목록.html 파일에 꽂아넣고
+
+3. 그 html 파일을 서버에서 보내주는 것임 
+
+ 
+
+client-side rendering은 html을 리액트가 브라우저안에서 만드는 겁니다.
+
+1. 리액트가 서버에 GET요청으로 DB데이터를 가져와서
+
+2. 그걸 html로 만들어서 보여주는 것임 
+
+ 
+
+ 
+
+리액트를 쓰는 경우 보통 client-side rendering을 합니다.
+
+그래서 DB에 있는 상품목록을 가져와서 리액트에서 보여주고 싶으면 
+
+이런 식으로 코드를 짭니다. 
+
+1. 서버는 누군가 /product로 GET요청을 하면 DB에서 데이터 꺼내서 보내주라고 API를 짜놓습니다. 
+
+2. 리액트는 상품목록을 보여주고 싶을 때 서버 /product 주소로 GET요청 날리면 됩니다.
+
+3. 그럼 데이터 받아오겠죠? 그걸 가지고 html에 집어넣든 맘대로 개발하면 됩니다. 
+
+ 
+
+그래서 리액트는 서버와의 통신은 거의 ajax로 진행합니다.
+
+POST요청, 로그인해서 세션만들기 이런것도 ajax로 잘됩니다. 
+
+ 
+
+ 
+
+근데 nodejs 서버파일 상단엔
+
+app.use(express.json());
+var cors = require('cors');
+app.use(cors());
+이 코드 넣고 시작하셔야 리액트와 nodejs 서버간 ajax 요청 잘됩니다. 
+
+이거 쓰려면 서버프로젝트 터미널에서 npm install cors 설치해야합니다. 
+
+express.json() 은 유저가 보낸 array/object 데이터를 출력해보기 위해 필요하고
+
+cors는 다른 도메인주소끼리 ajax 요청 주고받을 때 필요합니다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Q. 리액트프로젝트 코드 수정할 때 마다 build 작업을 해야하나요? 
+
+ 
+
+그럴 필요 없습니다.
+
+그건 나중에 사이트를 aws, google cloud 이런 곳에 발행할 때만 한 번 해주면 됩니다. 
+
+평소에 개발할 땐 
+
+리액트도 localhost로 미리보기 띄워놓고, 서버도 localhost로 미리보기를 띄워두고 개발 진행하면 별 문제 없습니다.
+
+ 
+
+- 다만 리액트 -> 서버 ajax 요청시 /product 이렇게 말고 http://서버주소/product 잘 입력하고
+
+- 서버에 cors 옵션 잘 켜놓으면 됩니다. 
+
+ 
+
+ 
+
+서버주소 입력하는게 귀찮으면  
+
+리액트에서 package.json이라는 파일을 열어서 proxy라는 부분 설정을
+
+서버 미리보기 띄우던 localhost:어쩌구 주소로 설정해주면 됩니다. 
+
+그러면 리액트에서 ajax 요청 대충해도 localhost:어쩌구 주소로 ajax 요청을 알아서 보내줍니다. 
+
+https://create-react-app.dev/docs/proxying-api-requests-in-development/
+
+이걸 참고합시다. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+서브디렉토리에 리액트앱 발행하고 싶은 경우 
+
+ 
+
+지금 메인페이지가 리액트앱인데 그거 말고
+
+/react 이렇게 접속하면 리액트로 만든 html
+
+/ 이렇게 접속하면 public 폴더에 있던 그냥 main.html
+
+보여주고 싶은 경우 어떻게 하냐면 
+
+ 
+
+(server.js)
+
+app.use( '/', express.static( path.join(__dirname, 'public') ))
+app.use( '/react', express.static( path.join(__dirname, 'react-project/build') ))
+
+app.get('/', function(요청,응답){
+  응답.sendFile( path.join(__dirname, 'public/main.html') )
+}) 
+app.get('/react', function(요청,응답){
+  응답.sendFile( path.join(__dirname, 'react-project/build/index.html') )
+})
+▲ server.js 라우팅을 이렇게 바꿔주고 
+
+ 
+
+ 
+
+(리액트프로젝트 내의 package.json)
+{
+  "homepage": "/react",
+  "version": "0.1.0",
+  ... 등
+} 
+▲ 리액트 프로젝트 내의 package.json에 homepage라는 항목을
+
+여러분이 발행을 원하는 서브디렉토리명으로 새로 기입해주면 됩니다. 
+
+그럼 방금 server.js 에서 /react 접속시 리액트 프로젝트보내고 
+
+/ 접속시 일반 html 파일 보내라고 했으니 정말 그렇게 됩니다. 
+
+딱히 쓸 일은 별로 없습니다. 
+
+ 
