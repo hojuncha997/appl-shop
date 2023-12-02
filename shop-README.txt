@@ -1249,7 +1249,7 @@ return (
 
 #################################
 
-19. 성능개선1: 재렌더링 막는 memo, useMemo
+19. 성능개선2: 재렌더링 막는 memo, useMemo
 
 #################################
 
@@ -1343,3 +1343,105 @@ let result = useMemo(()=>{ return 함수() }, [state])
 useEffect와의 차이는 실행 시점의 차이다.
 useEffect는 HTML 렌더링이 완료된 후에야 실행된다.
 useMemo는 렌더링 시 같이 수행된다.
+
+
+
+#################################
+
+20. 성능개선3: useTransition, useDefferedValue
+
+#################################
+
+20-1. automatic batching
+
+: state가 여러 개 뭉쳐 있으면 각각 재렌더링 하지 않고 마지막에 한 번만 재렌더링 한다.
+그런데 React 17 버전까지는 ajax 요청이나 setTimeout 내부에 state 변경 함수가 있는 경우,
+배칭을 하지 않았다.
+그러나 18버전부터는 해당 코드들이 어느 위치에 있든지 잘 발생한다.
+
+----
+
+20-2. useTransition
+
+: 성능이 저하되는 컴포넌트에서 사용되는 기능.
+느린 컴포넌트의 성능이 향상된다.
+useTransition으로 해당 컴포넌트를 감싸면 렌더링 시의 지연을 줄인다.
+
+import {useTransition} from 'react';
+function App() {
+  ...
+  let [isPending, startTransition] useTransition()
+  ...
+}
+
+- useTransition() 쓰면 그 자리에 [변수, 함수]가 남는다. 
+- 그 중 우측에 있는 startTransition() 함수로 state변경함수 같은걸 묶으면
+  그걸 다른 코드들보다 나중에 처리해준다.
+
+  브라우저는 싱글 스레드인데, 이것저것 옮겨가면서 코드를 수행하기 때문에 오래 걸린다.
+  startTransition로 스테이트를 변경하는 코드를 감싸면, 감싼 내부의 코드를 나중에 처리해 준다.
+  스레드가 다른 것을 중요한 작업을끝내고 해당 코드를 실행한다.
+  카드빚 돌려막기와 비슷하다.
+
+
+//App.js
+import {useState, useTransition} from 'react'
+
+let a = new Array(10000).fill(0)
+
+function App(){
+  let [name, setName] = useState('')
+  let [isPending, startTransition] = useTransition()
+  
+  return (
+    <div>
+      <input onChange={ (e)=>{ 
+        
+        startTransition(()=>{ // startTransition사용######
+          setName(e.target.value) 
+        })
+      }}/>
+
+      {
+        isPending ? '로딩 중' : // startTransition이 작업 중이면 true반환!
+        a.map(()=>{
+          return <div>{name}</div>
+        })
+      }
+    </div>
+  )
+}
+
+---
+
+20-2. useDeferredValue
+: startTransition()과 용도가 같다.
+다만 let state1 = useDeferredValue(name)처럼
+그 안에 스테이트나 변수를 집어 넣어 사용한다. 그 값에 변동이 생기면 그걸 늦게 처리한다.
+
+
+import {useState, useTransition, useDeferredValue} from 'react'
+
+let a = new Array(10000).fill(0)
+
+function App(){
+  let [name, setName] = useState('')
+
+  //useDeferredValue 사용####
+  let state1 = useDeferredValue(name)
+  
+  return (
+    <div>
+      <input onChange={ (e)=>{ 
+          setName(e.target.value) 
+      }}/>
+
+      {
+        a.map(()=>{
+          //그 값에 대한 표시가 늦게 표시됨
+          return <div>{state1}</div>
+        })
+      }
+    </div>
+  )
+}
